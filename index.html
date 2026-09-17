@@ -1,0 +1,3366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5B6CF6">
+<meta name="description" content="Fraction Adventure — an interactive Year 4 (KSSR) fractions learning app in English and Bahasa Melayu.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Fractions">
+<title>Fraction Adventure · Pengembaraan Pecahan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>➗</text></svg>">
+<style>
+/* ============ Fraction Adventure — styles ============ */
+:root{
+  --ink:#20214A;
+  --ink-soft:#5A5C86;
+  --paper:#F3F5FC;
+  --card:#FFFFFF;
+  --blueberry:#5B6CF6;
+  --mint:#16B79A;
+  --mango:#FF9F1C;
+  --melon:#FF5D6C;
+  --grape:#9B5DE5;
+  --line:#20214A;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+  --shadow:4px 4px 0 var(--line);
+  --shadow-sm:3px 3px 0 var(--line);
+  --shadow-lg:6px 6px 0 var(--line);
+  --font:"Nunito","Segoe UI Rounded","Trebuchet MS",system-ui,-apple-system,sans-serif;
+  --display:"Baloo 2","Nunito","Segoe UI Rounded",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:var(--paper);
+  background-image:radial-gradient(circle at 12% 8%,rgba(91,108,246,.10),transparent 42%),
+                   radial-gradient(circle at 88% 4%,rgba(255,159,28,.12),transparent 40%),
+                   radial-gradient(circle at 50% 100%,rgba(22,183,154,.10),transparent 45%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;margin:0 0 .4em}
+h1{font-size:clamp(1.6rem,5vw,2.3rem);letter-spacing:-.01em}
+h2{font-size:clamp(1.25rem,3.6vw,1.65rem)}
+h3{font-size:1.1rem}
+p{margin:0 0 .8em;max-width:68ch}
+button{font-family:inherit;font-size:1rem;cursor:pointer}
+:focus-visible{outline:3px solid var(--grape);outline-offset:3px;border-radius:6px}
+.hidden{display:none !important}
+
+/* ---- layout ---- */
+.wrap{max-width:940px;margin:0 auto;padding:0 16px 96px}
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(243,245,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:3px solid var(--line);
+}
+.topbar-in{max-width:940px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:1.05rem}
+.brand .logo{
+  width:34px;height:34px;border:3px solid var(--line);border-radius:9px;
+  display:grid;place-items:center;background:var(--mango);font-weight:800;font-size:.8rem;
+  box-shadow:var(--shadow-sm);flex:none
+}
+.spacer{flex:1}
+.lang{display:flex;border:3px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.lang button{border:0;background:transparent;padding:5px 12px;font-weight:700;font-size:.8rem;color:var(--ink-soft)}
+.lang button.on{background:var(--blueberry);color:#fff}
+.starcount{
+  display:flex;align-items:center;gap:5px;font-weight:800;background:#fff;
+  border:3px solid var(--line);border-radius:999px;padding:3px 12px;box-shadow:var(--shadow-sm);font-size:.9rem
+}
+
+/* ---- cards & buttons ---- */
+.card{
+  background:var(--card);border:3px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow);padding:20px;margin:16px 0
+}
+.card.flat{box-shadow:none}
+.btn{
+  border:3px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);
+  padding:12px 18px;font-weight:800;box-shadow:var(--shadow-sm);
+  transition:transform .08s ease,box-shadow .08s ease;min-height:48px
+}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--line)}
+.btn.primary{background:var(--blueberry);color:#fff}
+.btn.go{background:var(--mint);color:#fff}
+.btn.warn{background:var(--mango)}
+.btn.ghost{background:transparent;box-shadow:none;border-color:transparent;color:var(--ink-soft)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--shadow-sm)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn-row.end{justify-content:flex-end}
+
+/* ---- home ---- */
+.hero{
+  border:3px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);
+  background:linear-gradient(135deg,#5B6CF6,#9B5DE5);color:#fff;padding:22px;margin:18px 0
+}
+.hero h1{color:#fff;margin-bottom:.15em}
+.hero .sub{opacity:.92;font-weight:600;margin-bottom:14px}
+.hero .btn{background:#fff}
+.avatar-badge{
+  width:56px;height:56px;border-radius:50%;border:3px solid var(--line);background:#fff;
+  display:grid;place-items:center;font-size:1.8rem;box-shadow:var(--shadow-sm);flex:none
+}
+.progressbar{height:18px;border:3px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}
+.progressbar i{display:block;height:100%;background:var(--mango);transition:width .5s ease}
+.hero .progressbar{background:rgba(255,255,255,.35)}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.menu-tile{
+  border:3px solid var(--line);border-radius:var(--r-md);background:#fff;box-shadow:var(--shadow);
+  padding:16px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:96px
+}
+.menu-tile .ico{font-size:1.7rem}
+.menu-tile .ttl{font-family:var(--display);font-weight:700;font-size:1.05rem}
+.menu-tile .desc{font-size:.82rem;color:var(--ink-soft);font-weight:600}
+.menu-tile.t1{background:#EEF0FF}.menu-tile.t2{background:#E7FAF5}
+.menu-tile.t3{background:#FFF3E2}.menu-tile.t4{background:#FDEBEE}
+.menu-tile.t5{background:#F5EBFF}
+
+/* ---- progress map ---- */
+.map{display:flex;flex-direction:column;gap:0}
+.map-node{display:flex;gap:14px;align-items:stretch}
+.map-rail{width:34px;display:flex;flex-direction:column;align-items:center;flex:none}
+.map-dot{
+  width:34px;height:34px;border-radius:50%;border:3px solid var(--line);background:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none
+}
+.map-dot.done{background:var(--mint);color:#fff}
+.map-dot.now{background:var(--mango)}
+.map-dot.lock{background:#E3E5F0;color:var(--ink-soft)}
+.map-line{width:4px;flex:1;background:var(--line);opacity:.25;min-height:14px}
+.map-item{
+  flex:1;text-align:left;border:3px solid var(--line);border-radius:var(--r-md);background:#fff;
+  box-shadow:var(--shadow-sm);padding:12px 14px;margin-bottom:12px;display:flex;gap:12px;align-items:center
+}
+.map-item.locked{background:#F0F1F7;color:var(--ink-soft);box-shadow:none;border-style:dashed}
+.map-item .ico{font-size:1.5rem;flex:none}
+.map-item .mt{font-family:var(--display);font-weight:700}
+.map-item .ms{font-size:.8rem;color:var(--ink-soft);font-weight:600}
+.stars-mini{letter-spacing:1px;font-size:.9rem;flex:none}
+
+/* ---- lesson ---- */
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.step-chip{
+  border:2px solid var(--line);border-radius:999px;padding:3px 10px;font-size:.72rem;font-weight:800;
+  background:#fff;color:var(--ink-soft)
+}
+.step-chip.on{background:var(--grape);color:#fff}
+.step-chip.done{background:var(--mint);color:#fff}
+.pill{
+  display:inline-block;border:2px solid var(--line);border-radius:999px;padding:2px 10px;
+  font-size:.72rem;font-weight:800;background:var(--mango)
+}
+.callout{
+  border:3px dashed var(--line);border-radius:var(--r-md);padding:14px 16px;background:#FFFDF5;margin:12px 0
+}
+.callout.tip{background:#EEF0FF;border-style:solid;border-color:var(--blueberry)}
+.keyword{background:#FFE9A8;border-radius:5px;padding:0 4px;font-weight:800}
+
+/* ---- fraction visuals ---- */
+.fracbox{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;margin:14px 0}
+.frac{
+  display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;
+  font-family:var(--display);font-weight:800;vertical-align:middle
+}
+.frac .num{padding:0 4px}
+.frac .den{padding:0 4px;border-top:3px solid currentColor}
+.frac.big{font-size:2rem}
+.frac.huge{font-size:2.8rem}
+.mixed{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:2rem}
+.part{cursor:pointer;transition:opacity .12s ease}
+.part:hover{opacity:.75}
+svg.shape{max-width:100%;height:auto;display:block;margin:0 auto;touch-action:manipulation}
+.shape-label{text-align:center;font-weight:700;color:var(--ink-soft);font-size:.85rem;margin-top:4px}
+
+/* ---- question ui ---- */
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdot{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);background:#fff}
+.qdot.ok{background:var(--mint)}.qdot.no{background:var(--melon)}.qdot.now{background:var(--mango)}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.opt{
+  border:3px solid var(--line);border-radius:var(--r-md);background:#fff;box-shadow:var(--shadow-sm);
+  padding:14px;font-weight:800;min-height:56px;display:flex;align-items:center;justify-content:center;gap:8px;
+  text-align:center
+}
+.opt.sel{background:#E7ECFF}
+.opt.right{background:#D7F6EE;border-color:var(--mint)}
+.opt.wrong{background:#FFE1E4;border-color:var(--melon)}
+.opt.big{font-size:1.6rem;font-family:var(--display)}
+.feedback{border:3px solid var(--line);border-radius:var(--r-md);padding:14px;margin-top:14px}
+.feedback.ok{background:#D7F6EE}
+.feedback.no{background:#FFF1DE}
+.feedback h4{margin:0 0 6px}
+.stepper{display:inline-flex;align-items:center;gap:8px}
+.stepper button{
+  width:44px;height:44px;border:3px solid var(--line);border-radius:12px;background:#fff;
+  font-size:1.3rem;font-weight:800;box-shadow:var(--shadow-sm)
+}
+.stepper .val{min-width:46px;text-align:center;font-family:var(--display);font-size:1.5rem;font-weight:800}
+.dropzones{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.zone{
+  border:3px dashed var(--line);border-radius:var(--r-md);min-height:110px;padding:10px;background:#fff
+}
+.zone.armed{background:#FFF6E2;border-color:var(--mango)}
+.zone h4{text-align:center;font-size:.95rem;margin-bottom:8px}
+.zone .bin{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tile{
+  border:3px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);
+  padding:8px 12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center
+}
+.tile.picked{background:var(--mango);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.tile.placed{opacity:.95}
+.tray{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.orderrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:flex-end;margin:12px 0}
+.ordercard{
+  border:3px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);
+  padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:92px
+}
+.ordercard.picked{background:#FFF0CC}
+.mini-move{display:flex;gap:4px}
+.mini-move button{width:30px;height:30px;border:2px solid var(--line);border-radius:8px;background:#fff;font-weight:800}
+.groupgrid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.groupbox{
+  border:3px dashed var(--line);border-radius:14px;padding:10px;min-width:88px;min-height:80px;background:#fff;
+  display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;justify-content:center;font-size:1.3rem
+}
+.itemtray{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:1.5rem;margin:10px 0}
+.item{cursor:pointer;border-radius:8px;padding:2px}
+.item.used{opacity:.25}
+
+/* ---- results ---- */
+.score-ring{
+  width:130px;height:130px;border-radius:50%;border:5px solid var(--line);display:grid;place-items:center;
+  background:conic-gradient(var(--mint) var(--pct,0%),#E6E8F3 0);margin:0 auto 12px
+}
+.score-ring b{
+  background:#fff;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--display);font-size:1.5rem;border:3px solid var(--line)
+}
+.tlist{list-style:none;padding:0;margin:8px 0}
+.tlist li{display:flex;gap:8px;align-items:center;padding:5px 0;font-weight:700}
+.bar-stat{height:12px;border:2px solid var(--line);border-radius:999px;background:#fff;overflow:hidden;flex:1;min-width:70px}
+.bar-stat i{display:block;height:100%;background:var(--blueberry)}
+.badge{
+  border:3px solid var(--line);border-radius:16px;padding:10px;text-align:center;background:#fff;
+  box-shadow:var(--shadow-sm);font-size:.78rem;font-weight:800
+}
+.badge .bi{font-size:1.6rem;display:block}
+.badge.off{opacity:.38;background:#F0F1F7;box-shadow:none}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+
+/* ---- misc ---- */
+.avatar-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(66px,1fr));gap:10px;margin:12px 0}
+.av{
+  border:3px solid var(--line);border-radius:16px;background:#fff;font-size:1.9rem;padding:8px;
+  box-shadow:var(--shadow-sm)
+}
+.av.on{background:var(--mango);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+input[type=text]{
+  border:3px solid var(--line);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:1.05rem;
+  width:100%;max-width:320px;background:#fff
+}
+.lab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.toast{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;
+  background:var(--ink);color:#fff;border-radius:999px;padding:10px 18px;font-weight:800;
+  box-shadow:var(--shadow-sm);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.pop{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(.86)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.shake{animation:shake .32s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.rise{animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.starburst{font-size:3rem;text-align:center;animation:pop .45s ease}
+.sticky-actions{
+  position:sticky;bottom:0;background:linear-gradient(to top,var(--paper) 70%,transparent);
+  padding:12px 0 16px;margin-top:10px
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .card{padding:15px;border-radius:18px}
+  .wrap{padding:0 12px 90px}
+  .dropzones{grid-template-columns:1fr}
+  .brand span.bt{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"></header>
+<main class="wrap" id="main"></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* =========================================================
+   Fraction Adventure — Year 4 KSSR (Malaysia)
+   Single-file app. No backend, no login.
+   ========================================================= */
+(function () {
+"use strict";
+
+/* ---------- storage (falls back to memory if blocked) ---------- */
+var store = {
+  mem: {},
+  ok: (function () {
+    try { window.localStorage.setItem("__fa", "1"); window.localStorage.removeItem("__fa"); return true; }
+    catch (e) { return false; }
+  })(),
+  get: function (k) { try { return this.ok ? localStorage.getItem(k) : (this.mem[k] || null); } catch (e) { return this.mem[k] || null; } },
+  set: function (k, v) { try { if (this.ok) localStorage.setItem(k, v); else this.mem[k] = v; } catch (e) { this.mem[k] = v; } },
+  del: function (k) { try { if (this.ok) localStorage.removeItem(k); else delete this.mem[k]; } catch (e) { delete this.mem[k]; } }
+};
+var KEY = "fractionAdventure.v1";
+
+/* ---------- app state ---------- */
+var S = {
+  lang: "en",
+  profile: null,              // {name, avatar}
+  modules: {},                // id -> {done:true, stars:0..3, best:0}
+  topics: {},                 // topic -> {correct, total}
+  badges: {},                 // id -> true
+  stars: 0,
+  finalBest: null,            // {score,total,pct}
+  screen: "home"
+};
+
+function save() {
+  store.set(KEY, JSON.stringify({
+    lang: S.lang, profile: S.profile, modules: S.modules, topics: S.topics,
+    badges: S.badges, stars: S.stars, finalBest: S.finalBest
+  }));
+}
+function load() {
+  var raw = store.get(KEY);
+  if (!raw) return;
+  try {
+    var d = JSON.parse(raw);
+    if (d && typeof d === "object") {
+      S.lang = d.lang === "ms" ? "ms" : "en";
+      S.profile = d.profile || null;
+      S.modules = d.modules || {};
+      S.topics = d.topics || {};
+      S.badges = d.badges || {};
+      S.stars = d.stars || 0;
+      S.finalBest = d.finalBest || null;
+    }
+  } catch (e) { /* corrupted save: start fresh */ }
+}
+
+/* ---------- tiny helpers ---------- */
+function $(sel, root) { return (root || document).querySelector(sel); }
+function el(tag, cls, html) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html !== undefined && html !== null) n.innerHTML = html;
+  return n;
+}
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function shuffle(a) {
+  var arr = a.slice();
+  for (var i = arr.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+  return arr;
+}
+function uniqPush(list, v, max) {
+  if (list.length >= max) return;
+  for (var i = 0; i < list.length; i++) if (list[i] === v) return;
+  list.push(v);
+}
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = b; b = a % b; a = t; } return a; }
+
+/* ---------- bilingual strings ---------- */
+var STR = {
+  appName:        { en: "Fraction Adventure", ms: "Pengembaraan Pecahan" },
+  tagline:        { en: "Year 4 Mathematics", ms: "Matematik Tahun 4" },
+  /* profile */
+  welcome:        { en: "Welcome!", ms: "Selamat datang!" },
+  askName:        { en: "What's your name?", ms: "Siapa nama kamu?" },
+  namePh:         { en: "Type your name", ms: "Taip nama kamu" },
+  pickAvatar:     { en: "Choose your character", ms: "Pilih watak kamu" },
+  start:          { en: "Start my adventure", ms: "Mula pengembaraan saya" },
+  needName:       { en: "Please type a name first.", ms: "Sila taip nama dahulu." },
+  /* home */
+  hello:          { en: "Hello, {name}!", ms: "Helo, {name}!" },
+  yourProgress:   { en: "Your progress", ms: "Kemajuan kamu" },
+  continueLearn:  { en: "Continue learning", ms: "Teruskan pembelajaran" },
+  startLearning:  { en: "Start learning", ms: "Mula belajar" },
+  allDone:        { en: "All lessons complete!", ms: "Semua pelajaran selesai!" },
+  mLearn:         { en: "Learn", ms: "Belajar" },
+  mLearnD:        { en: "11 lessons, step by step", ms: "11 pelajaran, langkah demi langkah" },
+  mPractise:      { en: "Practise", ms: "Berlatih" },
+  mPractiseD:     { en: "Train your weak topics", ms: "Latih topik yang lemah" },
+  mQuiz:          { en: "Quiz", ms: "Kuiz" },
+  mQuizD:         { en: "Test what you know", ms: "Uji pengetahuan kamu" },
+  mLab:           { en: "Fraction Lab", ms: "Makmal Pecahan" },
+  mLabD:          { en: "Build and explore fractions", ms: "Bina dan terokai pecahan" },
+  mProgress:      { en: "My Progress", ms: "Kemajuan Saya" },
+  mProgressD:     { en: "Stars, badges and scores", ms: "Bintang, lencana dan markah" },
+  /* nav */
+  back:           { en: "Back", ms: "Kembali" },
+  home:           { en: "Home", ms: "Utama" },
+  next:           { en: "Next", ms: "Seterusnya" },
+  check:          { en: "Check answer", ms: "Semak jawapan" },
+  tryAgain:       { en: "Try again", ms: "Cuba lagi" },
+  continue:       { en: "Continue", ms: "Teruskan" },
+  finish:         { en: "Finish", ms: "Tamat" },
+  newOne:         { en: "New one", ms: "Baharu" },
+  reset:          { en: "Reset", ms: "Set semula" },
+  /* lesson steps */
+  stepDiscover:   { en: "Discover", ms: "Teroka" },
+  stepExplain:    { en: "Explain", ms: "Terang" },
+  stepSee:        { en: "See it", ms: "Lihat" },
+  stepTry:        { en: "Try it", ms: "Cuba" },
+  stepPractise:   { en: "Practise", ms: "Latih" },
+  stepQuiz:       { en: "Mini quiz", ms: "Kuiz mini" },
+  stepReward:     { en: "Reward", ms: "Ganjaran" },
+  whatNotice:     { en: "What do you notice?", ms: "Apa yang kamu perasan?" },
+  seeItTitle:     { en: "Play with it", ms: "Main dengannya" },
+  tryItTitle:     { en: "Your turn — one question", ms: "Giliran kamu — satu soalan" },
+  practiseTitle:  { en: "Practice — 5 questions", ms: "Latihan — 5 soalan" },
+  miniQuizTitle:  { en: "Mini quiz — 5 questions", ms: "Kuiz mini — 5 soalan" },
+  lessonDone:     { en: "Lesson complete!", ms: "Pelajaran selesai!" },
+  starsEarned:    { en: "You earned {n} star(s) for this lesson.", ms: "Kamu memperoleh {n} bintang untuk pelajaran ini." },
+  unlockedNext:   { en: "New lesson unlocked: {t}", ms: "Pelajaran baharu dibuka: {t}" },
+  goLesson:       { en: "Open lesson", ms: "Buka pelajaran" },
+  review:         { en: "Review", ms: "Ulang kaji" },
+  locked:         { en: "Locked", ms: "Berkunci" },
+  lockedMsg:      { en: "Finish the lesson before this one to unlock it.", ms: "Selesaikan pelajaran sebelum ini untuk membukanya." },
+  lessons:        { en: "Lessons", ms: "Pelajaran" },
+  learnPath:      { en: "Your learning path", ms: "Laluan pembelajaran kamu" },
+  /* quiz */
+  quizTitle:      { en: "Quiz room", ms: "Bilik kuiz" },
+  quickQuiz:      { en: "Quick Quiz", ms: "Kuiz Pantas" },
+  quickQuizD:     { en: "10 mixed questions", ms: "10 soalan campuran" },
+  practiceTest:   { en: "Practice Test", ms: "Ujian Latihan" },
+  practiceTestD:  { en: "20 questions, all topics", ms: "20 soalan, semua topik" },
+  challenge:      { en: "Challenge", ms: "Cabaran" },
+  challengeD:     { en: "10 harder questions", ms: "10 soalan lebih sukar" },
+  topicQuiz:      { en: "Topic Quiz", ms: "Kuiz Topik" },
+  topicQuizD:     { en: "Choose one topic", ms: "Pilih satu topik" },
+  mixedQuiz:      { en: "Mixed Quiz", ms: "Kuiz Campuran" },
+  mixedQuizD:     { en: "15 questions from everything", ms: "15 soalan daripada semua" },
+  finalChallenge: { en: "Fraction Master Challenge", ms: "Cabaran Jaguh Pecahan" },
+  finalChallengeD:{ en: "20 questions covering the whole topic", ms: "20 soalan meliputi keseluruhan topik" },
+  finalLocked:    { en: "Finish all 11 lessons to unlock the Fraction Master Challenge.", ms: "Selesaikan semua 11 pelajaran untuk membuka Cabaran Jaguh Pecahan." },
+  chooseTopic:    { en: "Choose a topic", ms: "Pilih satu topik" },
+  question:       { en: "Question {n} of {t}", ms: "Soalan {n} daripada {t}" },
+  correct:        { en: "Correct!", ms: "Betul!" },
+  notQuite:       { en: "Not quite.", ms: "Belum tepat." },
+  yourScore:      { en: "Your score", ms: "Markah kamu" },
+  accuracy:       { en: "Accuracy", ms: "Ketepatan" },
+  strongAt:       { en: "You are strong at", ms: "Kamu kuat dalam" },
+  keepPractising: { en: "Keep practising", ms: "Terus berlatih" },
+  mastered:       { en: "Mastered", ms: "Dikuasai" },
+  again:          { en: "Play again", ms: "Main lagi" },
+  praise3:        { en: "Excellent work!", ms: "Kerja yang cemerlang!" },
+  praise2:        { en: "Good job — nearly there!", ms: "Bagus — hampir sampai!" },
+  praise1:        { en: "Good try. Let's practise a bit more.", ms: "Cubaan yang baik. Mari berlatih lagi sedikit." },
+  masterYes:      { en: "You are a Fraction Master!", ms: "Kamu seorang Jaguh Pecahan!" },
+  masterNo:       { en: "Almost a master — try again after some practice.", ms: "Hampir menjadi jaguh — cuba lagi selepas berlatih." },
+  /* practice / adaptive */
+  practiceHub:    { en: "Practice room", ms: "Bilik latihan" },
+  weakestFirst:   { en: "Let's practise this skill again", ms: "Mari berlatih kemahiran ini semula" },
+  noWeak:         { en: "No weak topics yet. Answer more questions and I'll spot what to practise.", ms: "Belum ada topik lemah. Jawab lebih banyak soalan dan saya akan kenal pasti apa yang perlu dilatih." },
+  practiseTopic:  { en: "Practise {t}", ms: "Latih {t}" },
+  allTopics:      { en: "All topics", ms: "Semua topik" },
+  notTried:       { en: "Not tried yet", ms: "Belum dicuba" },
+  /* progress */
+  myStars:        { en: "Stars collected", ms: "Bintang dikumpul" },
+  badgesT:        { en: "Badges", ms: "Lencana" },
+  topicScores:    { en: "How you are doing", ms: "Prestasi kamu" },
+  resetAll:       { en: "Reset all progress", ms: "Set semula semua kemajuan" },
+  resetSure:      { en: "This will erase your name, stars and progress. Are you sure?", ms: "Ini akan memadam nama, bintang dan kemajuan kamu. Kamu pasti?" },
+  bestScore:      { en: "Best: {p}%", ms: "Terbaik: {p}%" },
+  /* lab */
+  labTitle:       { en: "Fraction Lab", ms: "Makmal Pecahan" },
+  labIntro:       { en: "Build any fraction, then see it three ways. Tap the parts to shade them yourself.", ms: "Bina sebarang pecahan, kemudian lihatnya dalam tiga cara. Ketik bahagian untuk melorekkannya sendiri." },
+  numerator:      { en: "Numerator", ms: "Pengangka" },
+  denominator:    { en: "Denominator", ms: "Penyebut" },
+  builder:        { en: "Fraction builder", ms: "Pembina pecahan" },
+  equivRow:       { en: "Equivalent fractions", ms: "Pecahan setara" },
+  compareTool:    { en: "Compare two fractions", ms: "Banding dua pecahan" },
+  labNote:        { en: "Same shaded amount, different number of parts — that is what equivalent means.", ms: "Jumlah lorekan sama, bilangan bahagian berbeza — itulah maksud setara." },
+  isImproper:     { en: "This is an improper fraction — it is more than 1 whole.", ms: "Ini pecahan tak wajar — ia lebih daripada 1 keseluruhan." },
+  isOne:          { en: "This fraction is exactly 1 whole.", ms: "Pecahan ini tepat 1 keseluruhan." },
+  isProper:       { en: "This is a proper fraction — it is less than 1 whole.", ms: "Ini pecahan wajar — ia kurang daripada 1 keseluruhan." },
+  shadedParts:    { en: "{a} of {b} equal parts are shaded.", ms: "{a} daripada {b} bahagian sama besar dilorek." },
+  /* question prompts & feedback are in 03-bank.js */
+  tapToShade:     { en: "Tap the parts to shade them.", ms: "Ketik bahagian untuk melorekkannya." },
+  tapCardThenBox: { en: "Tap a card, then tap the box it belongs to.", ms: "Ketik kad, kemudian ketik kotak yang betul." },
+  tapTwoSwap:     { en: "Tap two cards to swap them, or use the arrows.", ms: "Ketik dua kad untuk menukarnya, atau guna anak panah." },
+  smallToBig:     { en: "Smallest to largest", ms: "Terkecil ke terbesar" },
+  bigToSmall:     { en: "Largest to smallest", ms: "Terbesar ke terkecil" },
+  savedLocal:     { en: "Progress is saved on this device only.", ms: "Kemajuan disimpan pada peranti ini sahaja." },
+  noSave:         { en: "Storage is blocked here, so progress lasts for this visit only.", ms: "Storan disekat di sini, jadi kemajuan kekal untuk lawatan ini sahaja." }
+};
+
+function T(key, vars) {
+  var s = STR[key] ? (STR[key][S.lang] || STR[key].en) : key;
+  if (vars) for (var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+  return s;
+}
+function L(obj, vars) {           /* localise a {en,ms} pair */
+  if (obj === undefined || obj === null) return "";
+  if (typeof obj === "string") return obj;
+  var s = obj[S.lang] || obj.en || "";
+  if (vars) for (var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+  return s;
+}
+
+/* export to module scope */
+window.FA = {
+  S: S, STR: STR, T: T, L: L, save: save, load: load, store: store, KEY: KEY,
+  $: $, el: el, clear: clear, ri: ri, pick: pick, shuffle: shuffle, uniqPush: uniqPush, gcd: gcd
+};
+})();
+
+/* =========================================================
+   Visual models: bars, circles, chocolate bars, object sets
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, el = FA.el;
+
+var NS = "http://www.w3.org/2000/svg";
+var INK = "#20214A";
+var FILLS = ["#5B6CF6", "#FF9F1C", "#16B79A", "#FF5D6C", "#9B5DE5"];
+var EMPTY = "#FFFFFF";
+
+function svgEl(tag, attrs) {
+  var n = document.createElementNS(NS, tag);
+  for (var k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function makeSVG(w, h) {
+  var s = svgEl("svg", { viewBox: "0 0 " + w + " " + h, "class": "shape", width: "100%",
+    preserveAspectRatio: "xMidYMid meet", role: "img" });
+  s.style.maxWidth = w + "px";   /* scale down on small screens, never distort */
+  return s;
+}
+function arcPath(cx, cy, r, a0, a1) {
+  var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+  var x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+  var big = (a1 - a0) > Math.PI ? 1 : 0;
+  return "M " + cx + " " + cy + " L " + x0.toFixed(2) + " " + y0.toFixed(2) +
+    " A " + r + " " + r + " 0 " + big + " 1 " + x1.toFixed(2) + " " + y1.toFixed(2) + " Z";
+}
+
+/* ---- one whole, split into `den` parts ---------------------------------
+   filled : array of booleans (length den)
+   opts   : {kind:'bar'|'circle'|'choc', color, w, h, onToggle(i), unequal:true}
+------------------------------------------------------------------------ */
+function wholeSVG(den, filled, opts) {
+  opts = opts || {};
+  var kind = opts.kind || "bar";
+  var color = opts.color || FILLS[0];
+  var svg, i, part;
+  var clickable = typeof opts.onToggle === "function";
+
+  function decorate(node, idx) {
+    node.setAttribute("stroke", INK);
+    node.setAttribute("stroke-width", "3");
+    node.setAttribute("fill", filled[idx] ? color : EMPTY);
+    if (clickable) {
+      node.setAttribute("class", "part");
+      node.setAttribute("tabindex", "0");
+      node.setAttribute("role", "button");
+      node.addEventListener("click", function () { opts.onToggle(idx); });
+      node.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); opts.onToggle(idx); }
+      });
+    }
+  }
+
+  if (kind === "circle") {
+    var size = opts.w || 180, r = size / 2 - 6, cx = size / 2, cy = size / 2;
+    svg = makeSVG(size, size);
+    for (i = 0; i < den; i++) {
+      var a0 = -Math.PI / 2 + (2 * Math.PI * i) / den;
+      var a1 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / den;
+      part = svgEl("path", { d: arcPath(cx, cy, r, a0, a1) });
+      decorate(part, i);
+      svg.appendChild(part);
+    }
+    return svg;
+  }
+
+  if (kind === "choc") {
+    /* chocolate bar: den squares in up to 2 rows */
+    var cols = den <= 6 ? den : Math.ceil(den / 2);
+    var rows = den <= 6 ? 1 : 2;
+    var cw = 54, ch = 54, pad = 6;
+    var W = cols * cw + pad * 2, H = rows * ch + pad * 2;
+    svg = makeSVG(W, H);
+    for (i = 0; i < den; i++) {
+      var rw = Math.floor(i / cols), cl = i % cols;
+      part = svgEl("rect", { x: pad + cl * cw, y: pad + rw * ch, width: cw, height: ch, rx: 7 });
+      decorate(part, i);
+      svg.appendChild(part);
+    }
+    return svg;
+  }
+
+  /* default: horizontal bar */
+  var bw = opts.w || 420, bh = opts.h || 62, p = 4;
+  svg = makeSVG(bw, bh + p * 2);
+  var inner = bw - p * 2;
+  var slice = inner / den;
+  for (i = 0; i < den; i++) {
+    var x = p + i * slice;
+    if (opts.unequal) {                     /* deliberately unequal parts for a teaching example */
+      var cuts = opts.unequal;              /* array of fractions summing to 1 */
+      var acc = 0, j;
+      for (j = 0; j < i; j++) acc += cuts[j];
+      x = p + acc * inner;
+      slice = cuts[i] * inner;
+    }
+    part = svgEl("rect", { x: x, y: p, width: slice, height: bh, rx: 5 });
+    decorate(part, i);
+    svg.appendChild(part);
+  }
+  return svg;
+}
+
+/* ---- a fraction num/den, drawn across as many wholes as needed ---- */
+function fractionSVG(num, den, opts) {
+  opts = opts || {};
+  var wholes = Math.max(1, Math.ceil(num / den));
+  var box = el("div", "");
+  box.style.display = "flex";
+  box.style.flexDirection = (opts.kind === "circle") ? "row" : "column";
+  box.style.flexWrap = "wrap";
+  box.style.gap = "8px";
+  box.style.justifyContent = "center";
+  box.style.alignItems = "center";
+  var left = num;
+  for (var w = 0; w < wholes; w++) {
+    var filled = [];
+    for (var i = 0; i < den; i++) { filled.push(left > 0); if (left > 0) left--; }
+    box.appendChild(wholeSVG(den, filled, opts));
+  }
+  return box;
+}
+
+/* ---- interactive shading pad ---- */
+function shadePad(den, state, opts) {
+  opts = opts || {};
+  var host = el("div", "");
+  function draw() {
+    FA.clear(host);
+    host.appendChild(wholeSVG(den, state.filled, {
+      kind: opts.kind || "bar", color: opts.color,
+      onToggle: function (i) {
+        state.filled[i] = !state.filled[i];
+        draw();
+        if (opts.onChange) opts.onChange(countTrue(state.filled));
+      }
+    }));
+    if (opts.caption) {
+      var cap = el("div", "shape-label", opts.caption(countTrue(state.filled), den));
+      host.appendChild(cap);
+    }
+  }
+  draw();
+  return host;
+}
+function countTrue(a) { var c = 0; for (var i = 0; i < a.length; i++) if (a[i]) c++; return c; }
+function boolArr(den, n) { var a = []; for (var i = 0; i < den; i++) a.push(i < n); return a; }
+
+/* ---- typographic fraction ---- */
+function fracHTML(n, d, cls) {
+  return '<span class="frac ' + (cls || "") + '"><span class="num">' + n + '</span><span class="den">' + d + "</span></span>";
+}
+function mixedHTML(w, n, d, cls) {
+  return '<span class="mixed ' + (cls || "") + '"><span>' + w + "</span>" + fracHTML(n, d) + "</span>";
+}
+function fracText(n, d) { return n + "/" + d; }
+function mixedText(w, n, d) { return w + " " + n + "/" + d; }
+
+/* ---- groups of objects (fraction of a quantity) ---- */
+var ITEMS = {
+  sweet: "🍬", apple: "🍎", pencil: "✏️", book: "📘", ball: "⚽",
+  star: "⭐", cookie: "🍪", flower: "🌼", fish: "🐟", marble: "🔵"
+};
+function itemRow(count, emoji) {
+  var row = el("div", "itemtray");
+  for (var i = 0; i < count; i++) row.appendChild(el("span", "item", emoji));
+  return row;
+}
+
+window.FA.vis = {
+  wholeSVG: wholeSVG, fractionSVG: fractionSVG, shadePad: shadePad, boolArr: boolArr,
+  countTrue: countTrue, fracHTML: fracHTML, mixedHTML: mixedHTML, fracText: fracText,
+  mixedText: mixedText, itemRow: itemRow, ITEMS: ITEMS, FILLS: FILLS, INK: INK, svgEl: svgEl
+};
+})();
+
+/* =========================================================
+   Question bank — every answer is computed, never typed by hand
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, ri = FA.ri, pick = FA.pick, shuffle = FA.shuffle, gcd = FA.gcd;
+var V = FA.vis, fracHTML = V.fracHTML, mixedHTML = V.mixedHTML;
+
+/* ---------------- topics ---------------- */
+var TOPICS = [
+  { id: "concept",  icon: "🍕", name: { en: "What is a fraction?",   ms: "Apa itu pecahan?" } },
+  { id: "readwrite",icon: "✍️", name: { en: "Reading & writing",      ms: "Membaca & menulis" } },
+  { id: "properimp",icon: "⚖️", name: { en: "Proper & improper",      ms: "Wajar & tak wajar" } },
+  { id: "mixed",    icon: "🍰", name: { en: "Mixed numbers",          ms: "Nombor bercampur" } },
+  { id: "equiv",    icon: "🟰", name: { en: "Equivalent fractions",   ms: "Pecahan setara" } },
+  { id: "compare",  icon: "🔍", name: { en: "Comparing fractions",    ms: "Membanding pecahan" } },
+  { id: "order",    icon: "📶", name: { en: "Ordering fractions",     ms: "Menyusun pecahan" } },
+  { id: "quantity", icon: "🍎", name: { en: "Fraction of a quantity", ms: "Pecahan daripada kuantiti" } },
+  { id: "add",      icon: "➕", name: { en: "Adding fractions",       ms: "Menambah pecahan" } },
+  { id: "subtract", icon: "➖", name: { en: "Subtracting fractions",  ms: "Menolak pecahan" } },
+  { id: "word",     icon: "🧠", name: { en: "Word problems",          ms: "Masalah berayat" } }
+];
+function topicName(id) {
+  for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return FA.L(TOPICS[i].name);
+  return id;
+}
+
+/* ---------------- reusable phrases ---------------- */
+var P = {
+  whatShaded:   { en: "What fraction is shaded?", ms: "Pecahan manakah yang dilorek?" },
+  whichPicture: { en: "Which picture shows {f}?", ms: "Gambar manakah menunjukkan {f}?" },
+  shadeTarget:  { en: "Shade {n} out of {d} equal parts.", ms: "Lorekkan {n} daripada {d} bahagian sama besar." },
+  whichIsNum:   { en: "In the fraction {f}, which number is the numerator?", ms: "Dalam pecahan {f}, nombor manakah pengangka?" },
+  whichIsDen:   { en: "In the fraction {f}, which number is the denominator?", ms: "Dalam pecahan {f}, nombor manakah penyebut?" },
+  howManyParts: { en: "The whole is divided into how many equal parts?", ms: "Keseluruhan ini dibahagikan kepada berapa bahagian sama besar?" },
+  equalPick:    { en: "Which shape is divided into equal parts?", ms: "Bentuk manakah yang dibahagikan kepada bahagian sama besar?" },
+  readWords:    { en: "Write the fraction: {w}.", ms: "Tulis pecahan itu: {w}." },
+  buildFrac:    { en: "Build the fraction shown in the picture.", ms: "Bina pecahan yang ditunjukkan dalam gambar." },
+  properQ:      { en: "Is {f} a proper fraction or an improper fraction?", ms: "Adakah {f} pecahan wajar atau pecahan tak wajar?" },
+  whichImproper:{ en: "Which one is an improper fraction?", ms: "Yang manakah pecahan tak wajar?" },
+  whichProper:  { en: "Which one is a proper fraction?", ms: "Yang manakah pecahan wajar?" },
+  sortBoxes:    { en: "Put each fraction into the correct box.", ms: "Letakkan setiap pecahan di dalam kotak yang betul." },
+  mixedPic:     { en: "Which mixed number does the picture show?", ms: "Nombor bercampur manakah ditunjukkan oleh gambar?" },
+  mixedParts:   { en: "How many {name} are there in {m}?", ms: "Berapa banyak {name} terdapat dalam {m}?" },
+  mixedSum:     { en: "{m} is the same as which of these?", ms: "{m} sama dengan yang manakah?" },
+  equivFill:    { en: "Complete the equivalent fraction.", ms: "Lengkapkan pecahan setara itu." },
+  whichEquiv:   { en: "Which fraction is equivalent to {f}?", ms: "Pecahan manakah setara dengan {f}?" },
+  equivRule:    { en: "{f} × {m}/{m} = ?", ms: "{f} × {m}/{m} = ?" },
+  compareSign:  { en: "Which sign belongs in the box?", ms: "Tanda manakah sesuai di dalam kotak?" },
+  whichGreater: { en: "Which fraction is greater?", ms: "Pecahan manakah lebih besar?" },
+  whichSmaller: { en: "Which fraction is smaller?", ms: "Pecahan manakah lebih kecil?" },
+  orderAsc:     { en: "Arrange the fractions from smallest to largest.", ms: "Susun pecahan dari terkecil ke terbesar." },
+  orderDesc:    { en: "Arrange the fractions from largest to smallest.", ms: "Susun pecahan dari terbesar ke terkecil." },
+  qtyQ:         { en: "What is {f} of {n}?", ms: "Berapakah {f} daripada {n}?" },
+  qtySplit:     { en: "Share the {item} into {d} equal groups, then answer.", ms: "Bahagikan {item} kepada {d} kumpulan sama banyak, kemudian jawab." },
+  addQ:         { en: "Work it out: {a} + {b}", ms: "Selesaikan: {a} + {b}" },
+  subQ:         { en: "Work it out: {a} − {b}", ms: "Selesaikan: {a} − {b}" },
+  missingAdd:   { en: "Find the missing fraction: {a} + ? = {c}", ms: "Cari pecahan yang hilang: {a} + ? = {c}" }
+};
+
+/* ---------------- explanation builders ---------------- */
+function exShaded(n, d) {
+  return {
+    en: n + " of the " + d + " equal parts are shaded, so the fraction is " + n + "/" + d +
+        ". The numerator " + n + " counts the shaded parts; the denominator " + d + " counts all the equal parts.",
+    ms: n + " daripada " + d + " bahagian sama besar dilorek, jadi pecahannya ialah " + n + "/" + d +
+        ". Pengangka " + n + " mengira bahagian yang dilorek; penyebut " + d + " mengira semua bahagian sama besar."
+  };
+}
+function exNumDen() {
+  return {
+    en: "The top number is the numerator — the parts we take. The bottom number is the denominator — the equal parts in one whole.",
+    ms: "Nombor di atas ialah pengangka — bahagian yang diambil. Nombor di bawah ialah penyebut — bahagian sama besar dalam satu keseluruhan."
+  };
+}
+function exProper(n, d) {
+  var proper = n < d;
+  return {
+    en: n + "/" + d + " is " + (proper ? "a proper fraction because the numerator " + n + " is smaller than the denominator " + d + ", so it is less than 1 whole."
+      : "an improper fraction because the numerator " + n + " is not smaller than the denominator " + d + ", so it is 1 whole or more."),
+    ms: n + "/" + d + " ialah " + (proper ? "pecahan wajar kerana pengangka " + n + " lebih kecil daripada penyebut " + d + ", jadi nilainya kurang daripada 1 keseluruhan."
+      : "pecahan tak wajar kerana pengangka " + n + " tidak lebih kecil daripada penyebut " + d + ", jadi nilainya 1 keseluruhan atau lebih.")
+  };
+}
+function exEquiv(n, d, m) {
+  return {
+    en: "Multiply the numerator and the denominator by the same number: " + n + " × " + m + " = " + (n * m) +
+        " and " + d + " × " + m + " = " + (d * m) + ". The shaded amount does not change, so " + n + "/" + d + " = " + (n * m) + "/" + (d * m) + ".",
+    ms: "Darab pengangka dan penyebut dengan nombor yang sama: " + n + " × " + m + " = " + (n * m) +
+        " dan " + d + " × " + m + " = " + (d * m) + ". Jumlah lorekan tidak berubah, jadi " + n + "/" + d + " = " + (n * m) + "/" + (d * m) + "."
+  };
+}
+function exCompareSameDen(a, b, d) {
+  var big = a > b ? a : b, sml = a > b ? b : a;
+  return {
+    en: "Both fractions are cut into " + d + " equal parts, so we just compare the numerators: " + big + " parts is more than " + sml + " parts.",
+    ms: "Kedua-dua pecahan dipotong kepada " + d + " bahagian sama besar, jadi kita banding pengangka sahaja: " + big + " bahagian lebih banyak daripada " + sml + " bahagian."
+  };
+}
+function exCompareSameNum(d1, d2) {
+  var small = Math.min(d1, d2), big = Math.max(d1, d2);
+  return {
+    en: "The numerators are the same, so look at the parts. Cutting a whole into " + big + " parts makes smaller pieces than cutting it into " + small + " parts, so the fraction with denominator " + small + " is greater.",
+    ms: "Pengangkanya sama, jadi lihat saiz bahagian. Memotong satu keseluruhan kepada " + big + " bahagian menghasilkan kepingan yang lebih kecil daripada " + small + " bahagian, jadi pecahan dengan penyebut " + small + " lebih besar."
+  };
+}
+function exAdd(a, b, d) {
+  return {
+    en: "The denominators are the same, so add the numerators only: " + a + " + " + b + " = " + (a + b) +
+        ". The denominator stays " + d + ", giving " + (a + b) + "/" + d + ".",
+    ms: "Penyebutnya sama, jadi tambah pengangka sahaja: " + a + " + " + b + " = " + (a + b) +
+        ". Penyebut kekal " + d + ", jadi jawapannya " + (a + b) + "/" + d + "."
+  };
+}
+function exSub(a, b, d) {
+  return {
+    en: "The denominators are the same, so subtract the numerators only: " + a + " − " + b + " = " + (a - b) +
+        ". The denominator stays " + d + ", giving " + (a - b) + "/" + d + ".",
+    ms: "Penyebutnya sama, jadi tolak pengangka sahaja: " + a + " − " + b + " = " + (a - b) +
+        ". Penyebut kekal " + d + ", jadi jawapannya " + (a - b) + "/" + d + "."
+  };
+}
+function exQty(n, d, total) {
+  var one = total / d;
+  return {
+    en: "Share " + total + " into " + d + " equal groups: " + total + " ÷ " + d + " = " + one + " in each group. " +
+        n + "/" + d + " means we take " + n + " group" + (n > 1 ? "s" : "") + ": " + one + " × " + n + " = " + (one * n) + ".",
+    ms: "Bahagikan " + total + " kepada " + d + " kumpulan sama banyak: " + total + " ÷ " + d + " = " + one + " dalam setiap kumpulan. " +
+        n + "/" + d + " bermaksud kita ambil " + n + " kumpulan: " + one + " × " + n + " = " + (one * n) + "."
+  };
+}
+
+/* misconception hints (shown when a known wrong choice is made) */
+function hintAddDen(d) {
+  return { en: "Look at the denominator. Both fractions are in " + d + "ths, so the denominator does not change when we add.",
+           ms: "Lihat penyebutnya. Kedua-dua pecahan dalam per" + d + ", jadi penyebut tidak berubah apabila kita menambah." };
+}
+function hintFlip() {
+  return { en: "Careful — the numerator goes on top and the denominator goes at the bottom.",
+           ms: "Hati-hati — pengangka di atas dan penyebut di bawah." };
+}
+function hintCountAll() {
+  return { en: "Count all the equal parts for the denominator, not only the unshaded ones.",
+           ms: "Kira semua bahagian sama besar untuk penyebut, bukan yang tidak dilorek sahaja." };
+}
+
+/* ---------------- option helpers ---------------- */
+function fo(n, d) { return { html: fracHTML(n, d, "big"), value: n + "/" + d }; }
+function to(text, value) { return { html: '<span>' + text + "</span>", value: value === undefined ? text : value }; }
+
+function fracDistractors(n, d, count) {
+  var out = [], tries = 0;
+  var cands = [
+    [d, n], [n + 1, d], [n - 1, d], [n, d + 1], [n, d - 1], [n + 1, d + 1], [d - n, d], [n, n + d]
+  ];
+  cands = shuffle(cands);
+  while (out.length < count && tries < 60) {
+    tries++;
+    var c = cands.length ? cands.pop() : [ri(1, 9), ri(2, 10)];
+    if (!c) continue;
+    var a = c[0], b = c[1];
+    if (a < 1 || b < 2 || a > 12 || b > 12) continue;
+    if (a === n && b === d) continue;
+    if (a / b === n / d) continue;          /* equivalent value would be a second correct answer */
+    var key = a + "/" + b, dup = false;
+    for (var i = 0; i < out.length; i++) if (out[i].value === key) dup = true;
+    if (!dup) out.push(fo(a, b));
+  }
+  return out;
+}
+
+var NAMES = ["Aiman", "Siti", "Hafiz", "Mei Ling", "Raj", "Nurul", "Adam", "Farah", "Chong Wei", "Priya", "Danish", "Amira"];
+
+/* =========================================================
+   GENERATORS  — one function per topic, each returns a question
+   ========================================================= */
+var GEN = {};
+
+/* ---- 1. concept ---- */
+GEN.concept = function (level) {
+  var mode = pick(level >= 3 ? ["den", "num", "parts", "shadeIt", "equalPick"] : ["parts", "shadeIt", "equalPick", "den", "num"]);
+  var d, n;
+  if (mode === "equalPick") {
+    d = ri(3, 4);
+    var cuts = d === 3 ? [0.5, 0.3, 0.2] : [0.4, 0.25, 0.2, 0.15];
+    return {
+      topic: "concept", level: 1, type: "pictureMcq",
+      prompt: P.equalPick,
+      buildOptions: function () {
+        var good = { svg: function () { return V.wholeSVG(d, V.boolArr(d, 0), { kind: "bar", w: 300, h: 46 }); }, value: "equal" };
+        var bad = { svg: function () { return V.wholeSVG(d, V.boolArr(d, 0), { kind: "bar", w: 300, h: 46, unequal: cuts }); }, value: "unequal" };
+        return shuffle([good, bad]);
+      },
+      answer: "equal",
+      explain: {
+        en: "A fraction only works when the whole is cut into parts of exactly the same size. In the other picture the parts are different sizes, so we cannot name a fraction.",
+        ms: "Pecahan hanya sah apabila keseluruhan dipotong kepada bahagian yang sama besar. Dalam gambar satu lagi, saiz bahagiannya berbeza, jadi kita tidak boleh menamakan pecahan."
+      }
+    };
+  }
+  if (mode === "shadeIt") {
+    d = ri(3, 8); n = ri(1, d - 1);
+    return {
+      topic: "concept", level: 1, type: "shade",
+      prompt: { en: FA.L(P.shadeTarget, { n: n, d: d }), ms: FA.L(P.shadeTarget, { n: n, d: d }) },
+      data: { den: d, target: n, kind: pick(["bar", "choc", "circle"]) },
+      answer: n,
+      explain: exShaded(n, d)
+    };
+  }
+  if (mode === "parts") {
+    d = ri(3, 10); n = ri(1, d - 1);
+    var opts = [to(String(d)), to(String(n)), to(String(d - n)), to(String(d + 1))];
+    var seen = {}, clean = [];
+    for (var i = 0; i < opts.length; i++) if (!seen[opts[i].value] && Number(opts[i].value) > 0) { seen[opts[i].value] = 1; clean.push(opts[i]); }
+    return {
+      topic: "concept", level: 1, type: "mcq",
+      prompt: P.howManyParts,
+      visual: function (host) { host.appendChild(V.fractionSVG(n, d, { kind: "bar", w: 380, h: 54 })); },
+      options: shuffle(clean), answer: String(d),
+      explain: {
+        en: "Count every equal part in the whole, shaded or not — there are " + d + ". That number is the denominator.",
+        ms: "Kira setiap bahagian sama besar dalam keseluruhan, dilorek atau tidak — ada " + d + ". Nombor itu ialah penyebut."
+      },
+      wrongHint: function (v) { return Number(v) === d - n || Number(v) === n ? hintCountAll() : null; }
+    };
+  }
+  d = ri(3, 10); n = ri(1, d - 1);
+  var isNum = mode === "num";
+  return {
+    topic: "concept", level: 2, type: "mcq",
+    prompt: { en: FA.L(isNum ? P.whichIsNum : P.whichIsDen, { f: n + "/" + d }), ms: FA.L(isNum ? P.whichIsNum : P.whichIsDen, { f: n + "/" + d }) },
+    visual: function (host) { host.appendChild(FA.el("div", "fracbox", fracHTML(n, d, "huge"))); },
+    options: shuffle([to(String(n)), to(String(d))]),
+    answer: String(isNum ? n : d),
+    explain: exNumDen()
+  };
+};
+
+/* ---- 2. reading & writing ---- */
+GEN.readwrite = function (level) {
+  var mode = pick(["shadedMcq", "shadedMcq", "buildIt", "whichPic", "words"]);
+  var d = ri(2, 10), n = ri(1, d - 1);
+  var kind = pick(["bar", "circle", "choc"]);
+  if (mode === "buildIt") {
+    return {
+      topic: "readwrite", level: 2, type: "complete",
+      prompt: P.buildFrac,
+      visual: function (host) { host.appendChild(V.fractionSVG(n, d, { kind: kind, w: kind === "circle" ? 170 : 380, h: 54 })); },
+      data: { missing: "both", maxNum: 12, maxDen: 12 },
+      answer: n + "/" + d,
+      explain: exShaded(n, d),
+      wrongHint: function (v) { return v === d + "/" + n ? hintFlip() : null; }
+    };
+  }
+  if (mode === "whichPic") {
+    var wrongs = [], guard = 0;
+    while (wrongs.length < 2 && guard < 40) {
+      guard++;
+      var wn = ri(1, d - 1), wd = pick([d, d, ri(2, 10)]);
+      if (wd < 2 || wn >= wd) continue;
+      if (wn === n && wd === d) continue;
+      var dup = false;
+      for (var i = 0; i < wrongs.length; i++) if (wrongs[i][0] === wn && wrongs[i][1] === wd) dup = true;
+      if (!dup) wrongs.push([wn, wd]);
+    }
+    var optlist = [{ nd: [n, d], value: "ok" }];
+    for (var j = 0; j < wrongs.length; j++) optlist.push({ nd: wrongs[j], value: "w" + j });
+    return {
+      topic: "readwrite", level: 2, type: "pictureMcq",
+      prompt: { en: FA.L(P.whichPicture, { f: n + "/" + d }), ms: FA.L(P.whichPicture, { f: n + "/" + d }) },
+      buildOptions: function () {
+        return shuffle(optlist.map(function (o) {
+          return { svg: function () { return V.wholeSVG(o.nd[1], V.boolArr(o.nd[1], o.nd[0]), { kind: "bar", w: 260, h: 42 }); }, value: o.value };
+        }));
+      },
+      answer: "ok",
+      explain: exShaded(n, d)
+    };
+  }
+  if (mode === "words") {
+    var wordsEn = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+    var wordsMs = ["satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "lapan", "sembilan", "sepuluh"];
+    var phrase = {
+      en: wordsEn[n - 1] + " out of " + wordsEn[d - 1] + " equal parts",
+      ms: wordsMs[n - 1] + " daripada " + wordsMs[d - 1] + " bahagian sama besar"
+    };
+    var os = [fo(n, d)].concat(fracDistractors(n, d, 3));
+    return {
+      topic: "readwrite", level: 2, type: "mcq",
+      prompt: { en: FA.L(P.readWords, { w: phrase.en }), ms: FA.L(P.readWords, { w: phrase.ms }) },
+      options: shuffle(os), answer: n + "/" + d,
+      explain: exShaded(n, d),
+      wrongHint: function (v) { return v === d + "/" + n ? hintFlip() : null; }
+    };
+  }
+  var opts2 = [fo(n, d)].concat(fracDistractors(n, d, 3));
+  return {
+    topic: "readwrite", level: 1, type: "mcq",
+    prompt: P.whatShaded,
+    visual: function (host) { host.appendChild(V.fractionSVG(n, d, { kind: kind, w: kind === "circle" ? 170 : 380, h: 54 })); },
+    options: shuffle(opts2), answer: n + "/" + d,
+    explain: exShaded(n, d),
+    wrongHint: function (v) {
+      if (v === d + "/" + n) return hintFlip();
+      if (v === (d - n) + "/" + d) return { en: "That is the unshaded part. We were asked for the shaded part.",
+                                            ms: "Itu bahagian yang tidak dilorek. Kita diminta bahagian yang dilorek." };
+      return null;
+    }
+  };
+};
+
+/* ---- 3. proper & improper ---- */
+GEN.properimp = function (level) {
+  var mode = pick(["classify", "yesno", "whichOne", "whichOne"]);
+  if (mode === "classify") {
+    var cards = [], guard = 0;
+    while (cards.length < 6 && guard < 80) {
+      guard++;
+      var wantProper = cards.length % 2 === 0;
+      var d = ri(2, 9), n = wantProper ? ri(1, d - 1) : ri(d, d + 5);
+      var key = n + "/" + d, dup = false;
+      for (var i = 0; i < cards.length; i++) if (cards[i].key === key) dup = true;
+      if (!dup) cards.push({ n: n, d: d, key: key, box: n < d ? "proper" : "improper" });
+    }
+    return {
+      topic: "properimp", level: 2, type: "classify",
+      prompt: P.sortBoxes,
+      data: {
+        cards: shuffle(cards),
+        boxes: [
+          { key: "proper", label: { en: "Proper fraction", ms: "Pecahan wajar" }, note: { en: "less than 1 whole", ms: "kurang daripada 1 keseluruhan" } },
+          { key: "improper", label: { en: "Improper fraction", ms: "Pecahan tak wajar" }, note: { en: "1 whole or more", ms: "1 keseluruhan atau lebih" } }
+        ]
+      },
+      answer: "auto",
+      explain: {
+        en: "Compare the two numbers. Numerator smaller than denominator → proper (less than 1 whole). Numerator the same as or bigger than the denominator → improper (1 whole or more).",
+        ms: "Banding kedua-dua nombor. Pengangka lebih kecil daripada penyebut → wajar (kurang daripada 1 keseluruhan). Pengangka sama atau lebih besar daripada penyebut → tak wajar (1 keseluruhan atau lebih)."
+      }
+    };
+  }
+  if (mode === "yesno") {
+    var dd = ri(2, 9), nn = pick([ri(1, dd - 1), ri(dd, dd + 4)]);
+    return {
+      topic: "properimp", level: 1, type: "mcq",
+      prompt: { en: FA.L(P.properQ, { f: nn + "/" + dd }), ms: FA.L(P.properQ, { f: nn + "/" + dd }) },
+      visual: function (host) { host.appendChild(V.fractionSVG(nn, dd, { kind: "bar", w: 360, h: 44 })); },
+      options: [to(FA.L({ en: "Proper fraction", ms: "Pecahan wajar" }), "proper"),
+                to(FA.L({ en: "Improper fraction", ms: "Pecahan tak wajar" }), "improper")],
+      answer: nn < dd ? "proper" : "improper",
+      explain: exProper(nn, dd)
+    };
+  }
+  var wantImproper = Math.random() < 0.5;
+  var right, list = [], g2 = 0;
+  var rd = ri(2, 8);
+  right = wantImproper ? [ri(rd, rd + 4), rd] : [ri(1, rd - 1), rd];
+  list.push(fo(right[0], right[1]));
+  while (list.length < 4 && g2 < 60) {
+    g2++;
+    var d2 = ri(2, 9);
+    var n2 = wantImproper ? ri(1, d2 - 1) : ri(d2, d2 + 4);
+    var k = n2 + "/" + d2, dp = false;
+    for (var q = 0; q < list.length; q++) if (list[q].value === k) dp = true;
+    if (!dp) list.push(fo(n2, d2));
+  }
+  return {
+    topic: "properimp", level: 2, type: "mcq",
+    prompt: wantImproper ? P.whichImproper : P.whichProper,
+    options: shuffle(list), answer: right[0] + "/" + right[1],
+    explain: exProper(right[0], right[1])
+  };
+};
+
+/* ---- 4. mixed numbers ---- */
+GEN.mixed = function (level) {
+  var mode = pick(["fromPic", "fromPic", "howMany", "sameAs"]);
+  var w = ri(1, 3), d = pick([2, 3, 4, 5, 6, 8]), n = ri(1, d - 1);
+  if (mode === "fromPic") {
+    var opts = [to(FA.vis.mixedHTML(w, n, d), w + "_" + n + "/" + d)];
+    var cand = [[w, d - n, d], [w + 1, n, d], [n, w, d], [w, n, d + 1]];
+    for (var i = 0; i < cand.length && opts.length < 4; i++) {
+      var c = cand[i];
+      if (c[1] < 1 || c[1] >= c[2] || c[0] < 1) continue;
+      var key = c[0] + "_" + c[1] + "/" + c[2], dup = false;
+      for (var j = 0; j < opts.length; j++) if (opts[j].value === key) dup = true;
+      if (!dup) opts.push(to(FA.vis.mixedHTML(c[0], c[1], c[2]), key));
+    }
+    return {
+      topic: "mixed", level: 2, type: "mcq",
+      prompt: P.mixedPic,
+      visual: function (host) {
+        var row = FA.el("div", "fracbox");
+        for (var k = 0; k < w; k++) row.appendChild(V.wholeSVG(d, V.boolArr(d, d), { kind: "circle", w: 120 }));
+        row.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: "circle", w: 120 }));
+        host.appendChild(row);
+      },
+      options: shuffle(opts), answer: w + "_" + n + "/" + d,
+      explain: {
+        en: w + " whole" + (w > 1 ? "s are" : " is") + " fully shaded and " + n + " of " + d + " parts of the last one, so the mixed number is " + w + " " + n + "/" + d + " = " + w + " whole" + (w > 1 ? "s" : "") + " + " + n + "/" + d + ".",
+        ms: w + " keseluruhan dilorek penuh dan " + n + " daripada " + d + " bahagian pada yang terakhir, jadi nombor bercampurnya ialah " + w + " " + n + "/" + d + " = " + w + " keseluruhan + " + n + "/" + d + "."
+      }
+    };
+  }
+  if (mode === "howMany") {
+    var dd = pick([2, 4]), ww = ri(1, 3), nn = 1;
+    var total = ww * dd + nn;
+    var pieceName = { 2: { en: "halves", ms: "setengah" }, 4: { en: "quarters", ms: "suku" } }[dd];
+    var os = [to(String(total)), to(String(ww + nn)), to(String(total + 1)), to(String(ww * dd))];
+    var seen = {}, clean = [];
+    for (var z = 0; z < os.length; z++) if (!seen[os[z].value]) { seen[os[z].value] = 1; clean.push(os[z]); }
+    return {
+      topic: "mixed", level: 3, type: "mcq",
+      prompt: { en: FA.L(P.mixedParts, { name: pieceName.en, m: ww + " " + nn + "/" + dd }),
+                ms: FA.L(P.mixedParts, { name: pieceName.ms, m: ww + " " + nn + "/" + dd }) },
+      visual: function (host) {
+        var row = FA.el("div", "fracbox");
+        for (var k = 0; k < ww; k++) row.appendChild(V.wholeSVG(dd, V.boolArr(dd, dd), { kind: "circle", w: 110 }));
+        row.appendChild(V.wholeSVG(dd, V.boolArr(dd, nn), { kind: "circle", w: 110 }));
+        host.appendChild(row);
+      },
+      options: shuffle(clean), answer: String(total),
+      explain: {
+        en: "Each whole holds " + dd + " pieces. " + ww + " whole" + (ww > 1 ? "s" : "") + " = " + (ww * dd) + " pieces, plus " + nn + " more = " + total + ". So " + ww + " " + nn + "/" + dd + " = " + total + "/" + dd + ".",
+        ms: "Setiap keseluruhan mengandungi " + dd + " keping. " + ww + " keseluruhan = " + (ww * dd) + " keping, campur " + nn + " lagi = " + total + ". Jadi " + ww + " " + nn + "/" + dd + " = " + total + "/" + dd + "."
+      }
+    };
+  }
+  return {
+    topic: "mixed", level: 2, type: "mcq",
+    prompt: { en: FA.L(P.mixedSum, { m: w + " " + n + "/" + d }), ms: FA.L(P.mixedSum, { m: w + " " + n + "/" + d }) },
+    options: shuffle([
+      to(FA.L({ en: w + " whole + " + n + "/" + d, ms: w + " keseluruhan + " + n + "/" + d }), "ok"),
+      to(FA.L({ en: w + " whole + " + d + "/" + n, ms: w + " keseluruhan + " + d + "/" + n }), "b"),
+      to(FA.L({ en: n + " whole + " + w + "/" + d, ms: n + " keseluruhan + " + w + "/" + d }), "c")
+    ]),
+    answer: "ok",
+    explain: {
+      en: "A mixed number is a whole number and a proper fraction joined together: " + w + " " + n + "/" + d + " means " + w + " whole" + (w > 1 ? "s" : "") + " and " + n + "/" + d + " more.",
+      ms: "Nombor bercampur ialah nombor bulat dan pecahan wajar yang digabungkan: " + w + " " + n + "/" + d + " bermaksud " + w + " keseluruhan dan " + n + "/" + d + " lagi."
+    }
+  };
+};
+
+/* ---- 5. equivalent ---- */
+GEN.equiv = function (level) {
+  var mode = pick(["fill", "fill", "which", "rule", "picture"]);
+  var base = pick([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [1, 5], [2, 5], [1, 6], [5, 6], [3, 8]]);
+  var n = base[0], d = base[1];
+  /* keep both parts of the equivalent fraction within 12 — Year 4 number range */
+  var mOpts = [];
+  for (var mm = 2; mm <= 6; mm++) if (d * mm <= 12 && n * mm <= 12) mOpts.push(mm);
+  if (!mOpts.length) { n = 1; d = 2; mOpts = [2, 3, 4, 5, 6]; }
+  var m = pick(mOpts);
+  if (mode === "fill") {
+    return {
+      topic: "equiv", level: 2, type: "complete",
+      prompt: P.equivFill,
+      visual: function (host) {
+        var box = FA.el("div", "fracbox");
+        box.innerHTML = fracHTML(n, d, "big") + '<span style="font-size:1.6rem;font-weight:800">=</span>' +
+          '<span class="frac big"><span class="num">?</span><span class="den">' + (d * m) + "</span></span>";
+        host.appendChild(box);
+        var bars = FA.el("div", "");
+        bars.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: "bar", w: 400, h: 44 }));
+        bars.appendChild(V.wholeSVG(d * m, V.boolArr(d * m, n * m), { kind: "bar", w: 400, h: 44, color: "#16B79A" }));
+        host.appendChild(bars);
+      },
+      data: { missing: "num", fixedDen: d * m, maxNum: 12 },
+      answer: (n * m) + "/" + (d * m),
+      explain: exEquiv(n, d, m)
+    };
+  }
+  if (mode === "rule") {
+    var os = [fo(n * m, d * m)];
+    FA.uniqPush2(os, fo(n * m, d), 4); FA.uniqPush2(os, fo(n, d * m), 4); FA.uniqPush2(os, fo(n + m, d + m), 4);
+    return {
+      topic: "equiv", level: 3, type: "mcq",
+      prompt: { en: FA.L(P.equivRule, { f: n + "/" + d, m: m }), ms: FA.L(P.equivRule, { f: n + "/" + d, m: m }) },
+      options: shuffle(os), answer: (n * m) + "/" + (d * m),
+      explain: exEquiv(n, d, m),
+      wrongHint: function (v) {
+        if (v === (n * m) + "/" + d || v === n + "/" + (d * m))
+          return { en: "Both the numerator and the denominator must be multiplied by " + m + " — not just one of them.",
+                   ms: "Pengangka dan penyebut mesti didarab dengan " + m + " — bukan satu sahaja." };
+        return null;
+      }
+    };
+  }
+  if (mode === "picture") {
+    var same = Math.random() < 0.5;
+    var n2 = same ? n * m : n * m + 1, d2 = d * m;
+    if (n2 >= d2) n2 = d2 - 1;
+    return {
+      topic: "equiv", level: 2, type: "mcq",
+      prompt: { en: "Are these two fractions equivalent?", ms: "Adakah dua pecahan ini setara?" },
+      visual: function (host) {
+        var box = FA.el("div", "");
+        box.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: "bar", w: 400, h: 44 }));
+        box.appendChild(FA.el("div", "shape-label", n + "/" + d));
+        box.appendChild(V.wholeSVG(d2, V.boolArr(d2, n2), { kind: "bar", w: 400, h: 44, color: "#FF9F1C" }));
+        box.appendChild(FA.el("div", "shape-label", n2 + "/" + d2));
+        host.appendChild(box);
+      },
+      options: [to(FA.L({ en: "Yes, equivalent", ms: "Ya, setara" }), "yes"), to(FA.L({ en: "No, not equivalent", ms: "Tidak, tidak setara" }), "no")],
+      answer: (n / d === n2 / d2) ? "yes" : "no",
+      explain: (n / d === n2 / d2) ? exEquiv(n, d, m) : {
+        en: "The shaded lengths are different, so the fractions are not equivalent. " + n + "/" + d + " is the same as " + (n * m) + "/" + d2 + ", not " + n2 + "/" + d2 + ".",
+        ms: "Panjang lorekan berbeza, jadi pecahan itu tidak setara. " + n + "/" + d + " sama dengan " + (n * m) + "/" + d2 + ", bukan " + n2 + "/" + d2 + "."
+      }
+    };
+  }
+  var list = [fo(n * m, d * m)];
+  var bad = [[n + 1, d + 1], [n * m, d], [n, d * m], [n * m + 1, d * m]];
+  for (var i = 0; i < bad.length && list.length < 4; i++) FA.uniqPush2(list, fo(bad[i][0], bad[i][1]), 4);
+  return {
+    topic: "equiv", level: 2, type: "mcq",
+    prompt: { en: FA.L(P.whichEquiv, { f: n + "/" + d }), ms: FA.L(P.whichEquiv, { f: n + "/" + d }) },
+    options: shuffle(list), answer: (n * m) + "/" + (d * m),
+    explain: exEquiv(n, d, m),
+    wrongHint: function (v) {
+      if (v === (n + 1) + "/" + (d + 1))
+        return { en: "Adding the same number to the top and bottom does not keep the fraction the same — we must multiply.",
+                 ms: "Menambah nombor yang sama pada atas dan bawah tidak mengekalkan nilai pecahan — kita mesti mendarab." };
+      return null;
+    }
+  };
+};
+
+/* ---- 6. comparing ---- */
+function comparePair(level) {
+  var d, a, b;
+  var style = level >= 3 ? pick(["sameNum", "sameDen", "equivalent", "sameNum"]) : pick(["sameDen", "sameDen", "sameNum"]);
+  if (style === "sameDen") {
+    d = ri(3, 10); a = ri(1, d - 1); b = ri(1, d - 1);
+    while (b === a) b = ri(1, d - 1);
+    return { A: [a, d], B: [b, d], style: style };
+  }
+  if (style === "sameNum") {
+    var num = ri(1, 3), d1 = ri(num + 1, 10), d2 = ri(num + 1, 10);
+    while (d2 === d1) d2 = ri(num + 1, 10);
+    return { A: [num, d1], B: [num, d2], style: style };
+  }
+  var base = pick([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4]]), m = ri(2, 3);
+  return { A: [base[0], base[1]], B: [base[0] * m, base[1] * m], style: style };
+}
+function cmpSign(A, B) {
+  var l = A[0] / A[1], r = B[0] / B[1];
+  return l > r ? ">" : (l < r ? "<" : "=");
+}
+function cmpExplain(A, B, style) {
+  if (style === "sameDen") return exCompareSameDen(A[0], B[0], A[1]);
+  if (style === "sameNum") return exCompareSameNum(A[1], B[1]);
+  return {
+    en: "The two bars have exactly the same shaded length, so the fractions are equivalent and we use the = sign.",
+    ms: "Kedua-dua bar mempunyai panjang lorekan yang sama, jadi pecahan itu setara dan kita guna tanda =."
+  };
+}
+GEN.compare = function (level) {
+  var p = comparePair(level || 1);
+  var sign = cmpSign(p.A, p.B);
+  if (Math.random() < 0.55 || sign === "=") {
+    return {
+      topic: "compare", level: p.style === "sameDen" ? 1 : 3, type: "compare",
+      prompt: P.compareSign,
+      data: { A: p.A, B: p.B },
+      answer: sign,
+      explain: cmpExplain(p.A, p.B, p.style)
+    };
+  }
+  var greater = sign === ">" ? p.A : p.B;
+  var askGreater = Math.random() < 0.5;
+  var target = askGreater ? greater : (sign === ">" ? p.B : p.A);
+  return {
+    topic: "compare", level: p.style === "sameDen" ? 2 : 3, type: "mcq",
+    prompt: askGreater ? P.whichGreater : P.whichSmaller,
+    visual: function (host) {
+      var box = FA.el("div", "");
+      box.appendChild(V.wholeSVG(p.A[1], V.boolArr(p.A[1], p.A[0]), { kind: "bar", w: 400, h: 40 }));
+      box.appendChild(FA.el("div", "shape-label", p.A[0] + "/" + p.A[1]));
+      box.appendChild(V.wholeSVG(p.B[1], V.boolArr(p.B[1], p.B[0]), { kind: "bar", w: 400, h: 40, color: "#FF9F1C" }));
+      box.appendChild(FA.el("div", "shape-label", p.B[0] + "/" + p.B[1]));
+      host.appendChild(box);
+    },
+    options: shuffle([fo(p.A[0], p.A[1]), fo(p.B[0], p.B[1])]),
+    answer: target[0] + "/" + target[1],
+    explain: cmpExplain(p.A, p.B, p.style)
+  };
+};
+
+/* ---- 7. ordering ---- */
+GEN.order = function (level) {
+  var cards = [], d, i;
+  var style = level >= 3 ? pick(["unit", "mixedSet", "sameDen"]) : pick(["sameDen", "sameDen", "unit"]);
+  if (style === "sameDen") {
+    d = ri(5, 10);
+    var pool = [];
+    for (i = 1; i < d; i++) pool.push(i);
+    pool = shuffle(pool).slice(0, level >= 3 ? 4 : 3);
+    for (i = 0; i < pool.length; i++) cards.push([pool[i], d]);
+  } else if (style === "unit") {
+    var dens = shuffle([2, 3, 4, 5, 6, 8, 10]).slice(0, level >= 3 ? 4 : 3);
+    for (i = 0; i < dens.length; i++) cards.push([1, dens[i]]);
+  } else {
+    var set = shuffle([[1, 4], [1, 2], [3, 4], [2, 4], [1, 8], [5, 8], [7, 8], [3, 8]]);
+    var used = {}, out = [];
+    for (i = 0; i < set.length && out.length < 4; i++) {
+      var val = set[i][0] / set[i][1];
+      if (used[val]) continue;
+      used[val] = 1; out.push(set[i]);
+    }
+    cards = out;
+  }
+  var dir = Math.random() < 0.5 ? "asc" : "desc";
+  var sorted = cards.slice().sort(function (x, y) {
+    return dir === "asc" ? (x[0] / x[1]) - (y[0] / y[1]) : (y[0] / y[1]) - (x[0] / x[1]);
+  });
+  var shown = shuffle(cards);
+  while (shown.map(function (c) { return c.join("/"); }).join() === sorted.map(function (c) { return c.join("/"); }).join()) {
+    shown = shuffle(cards);
+  }
+  return {
+    topic: "order", level: style === "sameDen" ? 2 : 3, type: "order",
+    prompt: dir === "asc" ? P.orderAsc : P.orderDesc,
+    data: { cards: shown, dir: dir, showBars: level < 3 },
+    answer: sorted.map(function (c) { return c.join("/"); }).join(","),
+    explain: (function () {
+      var txt = sorted.map(function (c) { return c[0] + "/" + c[1]; }).join(dir === "asc" ? " < " : " > ");
+      if (style === "sameDen") return {
+        en: "All the fractions have the same denominator, so put the numerators in order: " + txt + ".",
+        ms: "Semua pecahan mempunyai penyebut yang sama, jadi susun pengangka mengikut urutan: " + txt + "."
+      };
+      if (style === "unit") return {
+        en: "The numerators are all 1. The bigger the denominator, the smaller each piece: " + txt + ".",
+        ms: "Semua pengangka ialah 1. Semakin besar penyebut, semakin kecil setiap kepingan: " + txt + "."
+      };
+      return {
+        en: "Use the fraction bars to compare the shaded lengths: " + txt + ".",
+        ms: "Guna bar pecahan untuk membanding panjang lorekan: " + txt + "."
+      };
+    })()
+  };
+};
+
+/* ---- 8. fraction of a quantity ---- */
+GEN.quantity = function (level) {
+  var d = pick(level >= 3 ? [3, 4, 5, 6, 8] : [2, 3, 4]);
+  var n = level >= 3 ? ri(1, d - 1) : 1;
+  var per = ri(2, 5);
+  var total = d * per;
+  var ans = per * n;
+  var itemKey = pick(Object.keys(V.ITEMS));
+  var emoji = V.ITEMS[itemKey];
+  if (Math.random() < 0.45) {
+    return {
+      topic: "quantity", level: level >= 3 ? 3 : 2, type: "quantity",
+      prompt: { en: FA.L(P.qtyQ, { f: n + "/" + d, n: total }), ms: FA.L(P.qtyQ, { f: n + "/" + d, n: total }) },
+      data: { total: total, den: d, num: n, emoji: emoji },
+      answer: String(ans),
+      explain: exQty(n, d, total)
+    };
+  }
+  var os = [to(String(ans))];
+  FA.uniqPush2(os, to(String(per)), 4);
+  FA.uniqPush2(os, to(String(total - ans)), 4);
+  FA.uniqPush2(os, to(String(total / 2)), 4);
+  FA.uniqPush2(os, to(String(ans + per)), 4);
+  os = os.filter(function (o) { return Number(o.value) > 0 && Number(o.value) % 1 === 0; });
+  return {
+    topic: "quantity", level: 2, type: "mcq",
+    prompt: { en: FA.L(P.qtyQ, { f: n + "/" + d, n: total }), ms: FA.L(P.qtyQ, { f: n + "/" + d, n: total }) },
+    visual: function (host) { host.appendChild(V.itemRow(total, emoji)); },
+    options: shuffle(os), answer: String(ans),
+    explain: exQty(n, d, total)
+  };
+};
+
+/* ---- 9 & 10. add / subtract ---- */
+GEN.add = function (level) {
+  var d = ri(3, 10), a = ri(1, d - 2), b = ri(1, d - a);
+  var sum = a + b;
+  if (Math.random() < 0.25 && level >= 3) {
+    /* missing addend */
+    return {
+      topic: "add", level: 3, type: "complete",
+      prompt: { en: FA.L(P.missingAdd, { a: a + "/" + d, c: sum + "/" + d }), ms: FA.L(P.missingAdd, { a: a + "/" + d, c: sum + "/" + d }) },
+      data: { missing: "num", fixedDen: d, maxNum: 12 },
+      answer: b + "/" + d,
+      explain: {
+        en: "The denominators stay the same, so we ask: " + a + " + what = " + sum + "? The answer is " + b + ", giving " + b + "/" + d + ".",
+        ms: "Penyebut kekal sama, jadi kita tanya: " + a + " + berapa = " + sum + "? Jawapannya ialah " + b + ", iaitu " + b + "/" + d + "."
+      }
+    };
+  }
+  var os = [fo(sum, d)];
+  FA.uniqPush2(os, fo(sum, d + d), 4);
+  FA.uniqPush2(os, fo(a * b, d), 4);
+  FA.uniqPush2(os, fo(sum + 1, d), 4);
+  FA.uniqPush2(os, fo(Math.abs(a - b) || 1, d), 4);
+  return {
+    topic: "add", level: 2, type: "mcq",
+    prompt: { en: FA.L(P.addQ, { a: a + "/" + d, b: b + "/" + d }), ms: FA.L(P.addQ, { a: a + "/" + d, b: b + "/" + d }) },
+    visual: function (host) {
+      var box = FA.el("div", "");
+      box.appendChild(V.wholeSVG(d, V.boolArr(d, a), { kind: "bar", w: 380, h: 38 }));
+      box.appendChild(FA.el("div", "shape-label", a + "/" + d));
+      box.appendChild(V.wholeSVG(d, V.boolArr(d, b), { kind: "bar", w: 380, h: 38, color: "#FF9F1C" }));
+      box.appendChild(FA.el("div", "shape-label", "+ " + b + "/" + d));
+      host.appendChild(box);
+    },
+    options: shuffle(os), answer: sum + "/" + d,
+    explain: exAdd(a, b, d),
+    wrongHint: function (v) { return v === sum + "/" + (d + d) ? hintAddDen(d) : null; }
+  };
+};
+GEN.subtract = function (level) {
+  var d = ri(3, 10), a = ri(2, d), b = ri(1, a - 1);
+  var diff = a - b;
+  var os = [fo(diff, d)];
+  FA.uniqPush2(os, fo(a + b, d), 4);
+  if (d > 2) FA.uniqPush2(os, fo(diff, d - 1), 4);
+  FA.uniqPush2(os, fo(diff + 1, d), 4);
+  FA.uniqPush2(os, fo(b, d), 4);
+  return {
+    topic: "subtract", level: 2, type: "mcq",
+    prompt: { en: FA.L(P.subQ, { a: a + "/" + d, b: b + "/" + d }), ms: FA.L(P.subQ, { a: a + "/" + d, b: b + "/" + d }) },
+    visual: function (host) {
+      var box = FA.el("div", "");
+      box.appendChild(V.wholeSVG(d, V.boolArr(d, a), { kind: "bar", w: 380, h: 40 }));
+      box.appendChild(FA.el("div", "shape-label", FA.L({ en: "Start with " + a + "/" + d + ", then take away " + b + " part" + (b > 1 ? "s" : ""),
+                                                          ms: "Mula dengan " + a + "/" + d + ", kemudian buang " + b + " bahagian" }) ));
+      host.appendChild(box);
+    },
+    options: shuffle(os), answer: diff + "/" + d,
+    explain: exSub(a, b, d),
+    wrongHint: function (v) { return v === (a + b) + "/" + d ? { en: "This is a take-away question, so subtract the numerators instead of adding them.",
+                                                                 ms: "Ini soalan tolak, jadi tolak pengangka dan bukan menambahnya." } : null; }
+  };
+};
+
+/* ---- 11. word problems ---- */
+GEN.word = function (level) {
+  var name = pick(NAMES), name2 = pick(NAMES);
+  while (name2 === name) name2 = pick(NAMES);
+  var kind = pick(["give", "give", "left", "spend", "eatTogether", "pupils"]);
+  var d, per, total, n, ans, prompt, explain, os;
+
+  if (kind === "give" || kind === "pupils" || kind === "spend") {
+    d = pick(level >= 3 ? [3, 4, 5, 6, 8] : [2, 3, 4]);
+    n = level >= 3 ? ri(1, d - 1) : 1;
+    per = ri(2, 6); total = d * per; ans = per * n;
+    var item = kind === "spend" ? null : pick([
+      { en: "sweets", ms: "biji gula-gula" }, { en: "pencils", ms: "batang pensel" },
+      { en: "story books", ms: "buah buku cerita" }, { en: "marbles", ms: "biji guli" },
+      { en: "stickers", ms: "keping pelekat" }
+    ]);
+    if (kind === "spend") {
+      prompt = {
+        en: name + " has RM" + total + ". " + name + " spends " + n + "/" + d + " of the money on a school bag. How much is spent?",
+        ms: name + " mempunyai RM" + total + ". " + name + " membelanjakan " + n + "/" + d + " daripada wang itu untuk sebuah beg sekolah. Berapakah yang dibelanjakan?"
+      };
+      os = [to("RM" + ans, String(ans))];
+      FA.uniqPush2(os, to("RM" + per, String(per)), 4);
+      FA.uniqPush2(os, to("RM" + (total - ans), String(total - ans)), 4);
+      FA.uniqPush2(os, to("RM" + (ans + per), String(ans + per)), 4);
+    } else if (kind === "pupils") {
+      prompt = {
+        en: "There are " + total + " pupils in Year 4 Bestari. " + n + "/" + d + " of them joined the sports club. How many pupils joined?",
+        ms: "Terdapat " + total + " orang murid di Tahun 4 Bestari. " + n + "/" + d + " daripada mereka menyertai kelab sukan. Berapakah bilangan murid yang menyertainya?"
+      };
+      os = [to(String(ans))];
+      FA.uniqPush2(os, to(String(per)), 4);
+      FA.uniqPush2(os, to(String(total - ans)), 4);
+      FA.uniqPush2(os, to(String(d)), 4);
+    } else {
+      prompt = {
+        en: name + " has " + total + " " + item.en + ". " + name + " gives " + n + "/" + d + " of them to " + name2 + ". How many " + item.en + " are given away?",
+        ms: name + " mempunyai " + total + " " + item.ms + ". " + name + " memberikan " + n + "/" + d + " daripadanya kepada " + name2 + ". Berapakah yang diberikan?"
+      };
+      os = [to(String(ans))];
+      FA.uniqPush2(os, to(String(per)), 4);
+      FA.uniqPush2(os, to(String(total - ans)), 4);
+      FA.uniqPush2(os, to(String(d)), 4);
+    }
+    explain = exQty(n, d, total);
+    return {
+      topic: "word", level: level >= 3 ? 3 : 2, type: "mcq",
+      prompt: prompt, options: shuffle(os), answer: String(ans), explain: explain,
+      wrongHint: function (v) {
+        if (Number(v) === total - ans) return { en: "That is the amount left over. The question asks for the part that was taken.",
+                                                ms: "Itu baki yang tinggal. Soalan meminta bahagian yang diambil." };
+        return null;
+      }
+    };
+  }
+
+  if (kind === "eatTogether") {
+    d = pick([6, 8, 10, 12]);
+    var a = ri(1, 3), b = ri(1, 3);
+    prompt = {
+      en: "A cake is cut into " + d + " equal pieces. " + name + " eats " + a + " piece" + (a > 1 ? "s" : "") + " and " + name2 + " eats " + b + " piece" + (b > 1 ? "s" : "") + ". What fraction of the cake did they eat altogether?",
+      ms: "Sebiji kek dipotong kepada " + d + " bahagian sama besar. " + name + " makan " + a + " bahagian dan " + name2 + " makan " + b + " bahagian. Berapakah pecahan kek yang dimakan oleh mereka kesemuanya?"
+    };
+    os = [fo(a + b, d)];
+    FA.uniqPush2(os, fo(a + b, d + d), 4);
+    FA.uniqPush2(os, fo(a * b, d), 4);
+    FA.uniqPush2(os, fo(d - a - b, d), 4);
+    return {
+      topic: "word", level: 3, type: "mcq",
+      prompt: prompt, options: shuffle(os), answer: (a + b) + "/" + d,
+      explain: exAdd(a, b, d),
+      wrongHint: function (v) { return v === (a + b) + "/" + (d + d) ? hintAddDen(d) : null; }
+    };
+  }
+
+  /* left over */
+  d = pick([5, 6, 8, 10]);
+  var used = ri(1, d - 2);
+  prompt = {
+    en: name + " cuts a ribbon into " + d + " equal parts and uses " + used + " part" + (used > 1 ? "s" : "") + " to wrap a gift. What fraction of the ribbon is left?",
+    ms: name + " memotong sehelai reben kepada " + d + " bahagian sama besar dan menggunakan " + used + " bahagian untuk membalut hadiah. Berapakah pecahan reben yang tinggal?"
+  };
+  os = [fo(d - used, d)];
+  FA.uniqPush2(os, fo(used, d), 4);
+  FA.uniqPush2(os, fo(d - used, d - used), 4);
+  FA.uniqPush2(os, fo(d - used - 1, d), 4);
+  return {
+    topic: "word", level: 3, type: "mcq",
+    prompt: prompt, options: shuffle(os), answer: (d - used) + "/" + d,
+    explain: exSub(d, used, d),
+    wrongHint: function (v) { return v === used + "/" + d ? { en: "That is the part that was used. The question asks for the part that is left.",
+                                                              ms: "Itu bahagian yang telah digunakan. Soalan meminta bahagian yang tinggal." } : null; }
+  };
+};
+
+/* ---------------- bank builder ---------------- */
+var uid = 0;
+function numVal(v) {
+  if (typeof v !== "string") return null;
+  if (/^[0-9]+\/[0-9]+$/.test(v)) { var p2 = v.split("/"); return Number(p2[0]) / Number(p2[1]); }
+  if (/^[0-9]+(\.[0-9]+)?$/.test(v)) return Number(v);
+  return null;
+}
+/* drop any option that is a second correct answer (same value, different look) */
+function sanitize(q) {
+  if (q.type !== "mcq" || !q.options) return q;
+  var av = numVal(q.answer), seen = {}, out = [], hasAnswer = false;
+  q.options.forEach(function (o) {
+    if (seen[o.value]) return;
+    if (o.value === q.answer) { hasAnswer = true; }
+    else if (av !== null) {
+      var v = numVal(o.value);
+      if (v !== null && v === av) return;
+    }
+    seen[o.value] = 1;
+    out.push(o);
+  });
+  q.options = out;
+  q.valid = hasAnswer && out.length >= 2;
+  return q;
+}
+function makeQuestion(topic, level) {
+  var q, tries = 0;
+  do {
+    q = sanitize(GEN[topic](level || 2));
+    tries++;
+  } while (q.valid === false && tries < 8);
+  q.id = "q" + (++uid);
+  if (!q.topic) q.topic = topic;
+  if (!q.level) q.level = 2;
+  return q;
+}
+function signature(q) {
+  return q.topic + "|" + q.type + "|" + FA.L(q.prompt) + "|" + JSON.stringify(q.answer);
+}
+function bank(topic, count, level) {
+  var out = [], seen = {}, guard = 0;
+  while (out.length < count && guard < count * 25) {
+    guard++;
+    var q = makeQuestion(topic, level);
+    var s = signature(q);
+    if (seen[s]) continue;
+    seen[s] = 1;
+    out.push(q);
+  }
+  return out;
+}
+function mixedBank(count, level) {
+  var out = [], i = 0;
+  var ids = shuffle(TOPICS.map(function (t) { return t.id; }));
+  while (out.length < count) {
+    out.push(makeQuestion(ids[i % ids.length], level));
+    i++;
+  }
+  return shuffle(out);
+}
+
+window.FA.uniqPush2 = function (list, opt, max) {
+  if (list.length >= max) return;
+  for (var i = 0; i < list.length; i++) if (list[i].value === opt.value) return;
+  list.push(opt);
+};
+window.FA.bankAPI = {
+  TOPICS: TOPICS, topicName: topicName, makeQuestion: makeQuestion,
+  bank: bank, mixedBank: mixedBank, GEN: GEN
+};
+})();
+
+/* =========================================================
+   Question renderers — one per interaction type
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, el = FA.el, T = FA.T, L = FA.L, V = FA.vis;
+
+/* ---------- small shared controls ---------- */
+function stepper(min, max, val, onChange, label) {
+  var box = el("div", "");
+  if (label) box.appendChild(el("div", "shape-label", label));
+  var row = el("div", "stepper");
+  var minus = el("button", "", "−"); minus.setAttribute("aria-label", "minus");
+  var out = el("span", "val", String(val));
+  var plus = el("button", "", "+"); plus.setAttribute("aria-label", "plus");
+  minus.onclick = function () { if (val > min) { val--; out.textContent = val; out.classList.remove("pop"); void out.offsetWidth; out.classList.add("pop"); onChange(val); } };
+  plus.onclick = function () { if (val < max) { val++; out.textContent = val; out.classList.remove("pop"); void out.offsetWidth; out.classList.add("pop"); onChange(val); } };
+  row.appendChild(minus); row.appendChild(out); row.appendChild(plus);
+  box.appendChild(row);
+  box.style.textAlign = "center";
+  return { node: box, get: function () { return val; }, set: function (v) { val = v; out.textContent = v; } };
+}
+
+function actionBar(labelKey, onClick) {
+  var bar = el("div", "sticky-actions");
+  var row = el("div", "btn-row end");
+  var b = el("button", "btn primary", T(labelKey));
+  b.onclick = onClick;
+  row.appendChild(b);
+  bar.appendChild(row);
+  bar.btn = b;
+  return bar;
+}
+
+/* ---------- feedback ---------- */
+function showFeedback(host, ok, q, chosen, onNext) {
+  var fb = el("div", "feedback " + (ok ? "ok" : "no") + " rise");
+  fb.appendChild(el("h4", "", (ok ? "✅ " : "💡 ") + (ok ? T("correct") : T("notQuite"))));
+  if (!ok && q.wrongHint) {
+    var h = q.wrongHint(chosen);
+    if (h) fb.appendChild(el("p", "", "<strong>" + L(h) + "</strong>"));
+  }
+  fb.appendChild(el("p", "", L(q.explain)));
+  var row = el("div", "btn-row end");
+  var b = el("button", "btn go", T("continue"));
+  b.onclick = function () { b.disabled = true; onNext(); };
+  row.appendChild(b);
+  fb.appendChild(row);
+  host.appendChild(fb);
+  fb.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  b.focus();
+}
+
+/* =========================================================
+   renderQuestion(host, q, done)  -> done(isCorrect)
+   ========================================================= */
+function renderQuestion(host, q, done) {
+  FA.clear(host);
+  var wrap = el("div", "rise");
+  host.appendChild(wrap);
+
+  var pr = el("h3", "", L(q.prompt));
+  wrap.appendChild(pr);
+
+  var vis = el("div", "");
+  wrap.appendChild(vis);
+  if (q.visual) q.visual(vis);
+
+  var body = el("div", "");
+  wrap.appendChild(body);
+
+  function finish(ok, chosen) {
+    showFeedback(wrap, ok, q, chosen, function () { done(ok, chosen); });
+  }
+
+  switch (q.type) {
+    case "mcq":        return renderMcq(body, q, finish);
+    case "pictureMcq": return renderPictureMcq(body, q, finish);
+    case "shade":      return renderShade(body, q, finish);
+    case "complete":   return renderComplete(body, q, finish);
+    case "classify":   return renderClassify(body, q, finish);
+    case "compare":    return renderCompare(body, q, finish);
+    case "order":      return renderOrder(body, q, finish);
+    case "quantity":   return renderQuantity(body, q, finish);
+    default:           return renderMcq(body, q, finish);
+  }
+}
+
+/* ---- A. multiple choice ---- */
+function renderMcq(host, q, finish) {
+  var grid = el("div", "options");
+  var locked = false;
+  q.options.forEach(function (o) {
+    var b = el("button", "opt", o.html);
+    b.onclick = function () {
+      if (locked) return;
+      locked = true;
+      var ok = o.value === q.answer;
+      b.classList.add(ok ? "right" : "wrong");
+      b.classList.add(ok ? "pop" : "shake");
+      if (!ok) {
+        Array.prototype.forEach.call(grid.children, function (c, i) {
+          if (q.options[i].value === q.answer) c.classList.add("right");
+        });
+      }
+      Array.prototype.forEach.call(grid.children, function (c) { c.disabled = true; });
+      finish(ok, o.value);
+    };
+    grid.appendChild(b);
+  });
+  host.appendChild(grid);
+}
+
+/* ---- B. picture choice ---- */
+function renderPictureMcq(host, q, finish) {
+  var opts = q.buildOptions();
+  var grid = el("div", "options");
+  grid.style.gridTemplateColumns = "repeat(auto-fit,minmax(180px,1fr))";
+  var locked = false;
+  opts.forEach(function (o) {
+    var b = el("button", "opt");
+    b.style.flexDirection = "column";
+    b.appendChild(o.svg());
+    b.onclick = function () {
+      if (locked) return;
+      locked = true;
+      var ok = o.value === q.answer;
+      b.classList.add(ok ? "right" : "wrong");
+      b.classList.add(ok ? "pop" : "shake");
+      Array.prototype.forEach.call(grid.children, function (c, i) {
+        c.disabled = true;
+        if (opts[i].value === q.answer) c.classList.add("right");
+      });
+      finish(ok, o.value);
+    };
+    grid.appendChild(b);
+  });
+  host.appendChild(grid);
+}
+
+/* ---- C. shade the fraction ---- */
+function renderShade(host, q, finish) {
+  var d = q.data.den;
+  var state = { filled: V.boolArr(d, 0) };
+  host.appendChild(el("p", "", T("tapToShade")));
+  var live = el("div", "shape-label", "");
+  var pad = V.shadePad(d, state, {
+    kind: q.data.kind,
+    onChange: function (n) { live.innerHTML = L({ en: n + " of " + d + " shaded", ms: n + " daripada " + d + " dilorek" }); }
+  });
+  host.appendChild(pad);
+  host.appendChild(live);
+  var bar = actionBar("check", function () {
+    var n = V.countTrue(state.filled);
+    bar.btn.disabled = true;
+    finish(n === q.data.target, String(n));
+  });
+  host.appendChild(bar);
+}
+
+/* ---- D. complete the fraction (steppers) ---- */
+function renderComplete(host, q, finish) {
+  var d = q.data;
+  var num = 1, den = d.fixedDen || 2;
+  var box = el("div", "fracbox");
+  var numCtl = stepper(1, d.maxNum || 12, num, function (v) { num = v; }, T("numerator"));
+  box.appendChild(numCtl.node);
+  var line = el("div", "", '<span style="font-size:2rem;font-weight:800">/</span>');
+  box.appendChild(line);
+  if (d.missing === "both") {
+    var denCtl = stepper(2, d.maxDen || 12, den, function (v) { den = v; }, T("denominator"));
+    box.appendChild(denCtl.node);
+  } else {
+    var fixed = el("div", "");
+    fixed.appendChild(el("div", "shape-label", T("denominator")));
+    fixed.appendChild(el("div", "", '<div style="font-family:var(--display);font-size:1.5rem;font-weight:800;text-align:center">' + den + "</div>"));
+    box.appendChild(fixed);
+  }
+  host.appendChild(box);
+  var bar = actionBar("check", function () {
+    bar.btn.disabled = true;
+    var val = num + "/" + den;
+    finish(val === q.answer, val);
+  });
+  host.appendChild(bar);
+}
+
+/* ---- E. classify into boxes ---- */
+function renderClassify(host, q, finish) {
+  var cards = q.data.cards.slice();
+  var picked = null;
+  var placement = {};   /* key -> boxKey */
+  host.appendChild(el("p", "", T("tapCardThenBox")));
+  var tray = el("div", "tray");
+  var zones = el("div", "dropzones");
+
+  function draw() {
+    FA.clear(tray); FA.clear(zones);
+    cards.forEach(function (c) {
+      if (placement[c.key]) return;
+      var t = el("button", "tile" + (picked === c.key ? " picked" : ""), V.fracHTML(c.n, c.d));
+      t.onclick = function () { picked = (picked === c.key) ? null : c.key; draw(); };
+      tray.appendChild(t);
+    });
+    q.data.boxes.forEach(function (bx) {
+      var z = el("div", "zone" + (picked ? " armed" : ""));
+      z.appendChild(el("h4", "", L(bx.label) + '<br><span style="font-size:.72rem;font-weight:700;color:var(--ink-soft)">' + L(bx.note) + "</span>"));
+      var bin = el("div", "bin");
+      cards.forEach(function (c) {
+        if (placement[c.key] !== bx.key) return;
+        var t = el("button", "tile placed", V.fracHTML(c.n, c.d));
+        t.onclick = function () { delete placement[c.key]; picked = null; draw(); };
+        bin.appendChild(t);
+      });
+      z.appendChild(bin);
+      z.onclick = function (e) {
+        if (e.target !== z && e.target.parentNode !== z && !z.contains(e.target)) return;
+        if (picked) { placement[picked] = bx.key; picked = null; draw(); }
+      };
+      zones.appendChild(z);
+    });
+    check.btn.disabled = Object.keys(placement).length !== cards.length;
+  }
+  host.appendChild(tray);
+  host.appendChild(zones);
+  var check = actionBar("check", function () {
+    check.btn.disabled = true;
+    var ok = true;
+    cards.forEach(function (c) { if (placement[c.key] !== c.box) ok = false; });
+    /* mark the wrong ones */
+    Array.prototype.forEach.call(zones.querySelectorAll(".tile"), function (t) { t.disabled = true; });
+    if (!ok) {
+      var lines = cards.filter(function (c) { return placement[c.key] !== c.box; })
+        .map(function (c) { return c.n + "/" + c.d; }).join(", ");
+      q.explain = {
+        en: L(q.explain) + " Check these again: " + lines + ".",
+        ms: L(q.explain) + " Semak semula yang ini: " + lines + "."
+      };
+    }
+    finish(ok, "sorted");
+  });
+  host.appendChild(check);
+  draw();
+}
+
+/* ---- F. compare with > < = ---- */
+function renderCompare(host, q, finish) {
+  var A = q.data.A, B = q.data.B;
+  var row = el("div", "");
+  var line = el("div", "fracbox");
+  line.innerHTML = V.fracHTML(A[0], A[1], "big") +
+    '<span id="cmpbox" style="border:3px solid var(--line);border-radius:10px;min-width:52px;height:52px;display:inline-flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;background:#fff">?</span>' +
+    V.fracHTML(B[0], B[1], "big");
+  row.appendChild(line);
+  row.appendChild(V.wholeSVG(A[1], V.boolArr(A[1], A[0]), { kind: "bar", w: 400, h: 38 }));
+  row.appendChild(el("div", "shape-label", A[0] + "/" + A[1]));
+  row.appendChild(V.wholeSVG(B[1], V.boolArr(B[1], B[0]), { kind: "bar", w: 400, h: 38, color: "#FF9F1C" }));
+  row.appendChild(el("div", "shape-label", B[0] + "/" + B[1]));
+  host.appendChild(row);
+
+  var grid = el("div", "options");
+  var locked = false;
+  [">", "<", "="].forEach(function (sign) {
+    var b = el("button", "opt big", sign);
+    b.onclick = function () {
+      if (locked) return;
+      locked = true;
+      var ok = sign === q.answer;
+      b.classList.add(ok ? "right" : "wrong");
+      b.classList.add(ok ? "pop" : "shake");
+      var boxEl = line.querySelector("#cmpbox");
+      if (boxEl) boxEl.textContent = q.answer;
+      Array.prototype.forEach.call(grid.children, function (c) { c.disabled = true; });
+      finish(ok, sign);
+    };
+    grid.appendChild(b);
+  });
+  host.appendChild(grid);
+}
+
+/* ---- G. order the fractions ---- */
+function renderOrder(host, q, finish) {
+  var list = q.data.cards.slice();
+  var picked = -1;
+  host.appendChild(el("p", "", T("tapTwoSwap")));
+  var arrow = el("div", "shape-label", q.data.dir === "asc" ? T("smallToBig") + " →" : T("bigToSmall") + " →");
+  host.appendChild(arrow);
+  var row = el("div", "orderrow");
+  host.appendChild(row);
+
+  function draw() {
+    FA.clear(row);
+    list.forEach(function (c, i) {
+      var card = el("div", "ordercard" + (picked === i ? " picked" : ""));
+      var tap = el("button", "tile", V.fracHTML(c[0], c[1], "big"));
+      tap.style.boxShadow = "none"; tap.style.border = "none"; tap.style.background = "transparent";
+      tap.onclick = function () {
+        if (picked === -1) { picked = i; }
+        else if (picked === i) { picked = -1; }
+        else { var t = list[picked]; list[picked] = list[i]; list[i] = t; picked = -1; }
+        draw();
+      };
+      card.appendChild(tap);
+      if (q.data.showBars) {
+        var mini = V.wholeSVG(c[1], V.boolArr(c[1], c[0]), { kind: "bar", w: 120, h: 26 });
+        mini.style.maxHeight = "34px";
+        card.appendChild(mini);
+      }
+      var mv = el("div", "mini-move");
+      var lft = el("button", "", "◀"); lft.setAttribute("aria-label", "move left");
+      var rgt = el("button", "", "▶"); rgt.setAttribute("aria-label", "move right");
+      lft.disabled = i === 0; rgt.disabled = i === list.length - 1;
+      lft.onclick = function () { var t = list[i - 1]; list[i - 1] = list[i]; list[i] = t; picked = -1; draw(); };
+      rgt.onclick = function () { var t = list[i + 1]; list[i + 1] = list[i]; list[i] = t; picked = -1; draw(); };
+      mv.appendChild(lft); mv.appendChild(rgt);
+      card.appendChild(mv);
+      row.appendChild(card);
+    });
+  }
+  draw();
+  var bar = actionBar("check", function () {
+    bar.btn.disabled = true;
+    var given = list.map(function (c) { return c[0] + "/" + c[1]; }).join(",");
+    Array.prototype.forEach.call(row.querySelectorAll("button"), function (b) { b.disabled = true; });
+    finish(given === q.answer, given);
+  });
+  host.appendChild(bar);
+}
+
+/* ---- H. fraction of a quantity (share into groups) ---- */
+function renderQuantity(host, q, finish) {
+  var d = q.data.den, total = q.data.total, emoji = q.data.emoji;
+  var shared = false, selected = {};
+  var per = total / d;
+
+  host.appendChild(el("p", "", L({
+    en: "Step 1: share the " + total + " items into " + d + " equal groups. Step 2: choose " + q.data.num + " group" + (q.data.num > 1 ? "s" : "") + ". Step 3: set your answer.",
+    ms: "Langkah 1: bahagikan " + total + " item kepada " + d + " kumpulan sama banyak. Langkah 2: pilih " + q.data.num + " kumpulan. Langkah 3: tetapkan jawapan kamu."
+  })));
+
+  var tray = V.itemRow(total, emoji);
+  host.appendChild(tray);
+  var groups = el("div", "groupgrid");
+  host.appendChild(groups);
+  var count = el("div", "shape-label", "");
+
+  function drawGroups() {
+    FA.clear(groups);
+    for (var g = 0; g < d; g++) {
+      (function (gi) {
+        var b = el("div", "groupbox");
+        if (selected[gi]) { b.style.background = "#FFF0CC"; b.style.borderStyle = "solid"; }
+        if (shared) for (var k = 0; k < per; k++) b.appendChild(el("span", "", emoji));
+        b.onclick = function () {
+          if (!shared) return;
+          selected[gi] = !selected[gi];
+          var c = 0; for (var z in selected) if (selected[z]) c++;
+          count.innerHTML = L({ en: c + " group(s) selected = " + (c * per) + " items", ms: c + " kumpulan dipilih = " + (c * per) + " item" });
+          drawGroups();
+        };
+        groups.appendChild(b);
+      })(g);
+    }
+  }
+  drawGroups();
+  host.appendChild(count);
+
+  var shareBtn = el("button", "btn warn", L({ en: "Share equally", ms: "Bahagi sama rata" }));
+  shareBtn.onclick = function () {
+    shared = true;
+    Array.prototype.forEach.call(tray.children, function (c) { c.classList.add("used"); });
+    drawGroups();
+    shareBtn.disabled = true;
+    count.innerHTML = L({ en: "Each group has " + per + ".", ms: "Setiap kumpulan ada " + per + "." });
+  };
+  var sRow = el("div", "btn-row"); sRow.appendChild(shareBtn);
+  host.appendChild(sRow);
+
+  var ansCtl = stepper(0, total, 0, function () {}, L({ en: "My answer", ms: "Jawapan saya" }));
+  host.appendChild(ansCtl.node);
+  var bar = actionBar("check", function () {
+    bar.btn.disabled = true;
+    var v = String(ansCtl.get());
+    finish(v === q.answer, v);
+  });
+  host.appendChild(bar);
+}
+
+window.FA.widgets = { renderQuestion: renderQuestion, stepper: stepper, actionBar: actionBar };
+})();
+
+/* =========================================================
+   Lessons: Discover → Explain → See it → Try it → Practise → Mini quiz → Reward
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, el = FA.el, L = FA.L, T = FA.T, V = FA.vis, W = FA.widgets;
+
+function panel(title) {
+  var p = el("div", "card flat");
+  p.style.border = "3px solid var(--line)";
+  if (title) p.appendChild(el("h3", "", title));
+  return p;
+}
+function bullets(items) {
+  var ul = el("ul", "");
+  ul.style.paddingLeft = "20px";
+  items.forEach(function (it) {
+    var li = el("li", "", L(it));
+    li.style.marginBottom = "8px";
+    ul.appendChild(li);
+  });
+  return ul;
+}
+function liveLabel(txt) { return el("div", "shape-label", txt); }
+
+/* ---------------- See-it widgets ---------------- */
+var SEE = {};
+
+/* 1 — shading playground */
+SEE.shadePlay = function (host) {
+  var d = 4, state = { filled: V.boolArr(4, 0) };
+  var kindIdx = 0, kinds = ["bar", "circle", "choc"];
+  var padHost = el("div", ""), read = el("div", "fracbox");
+  function refresh() {
+    FA.clear(padHost);
+    padHost.appendChild(V.shadePad(d, state, { kind: kinds[kindIdx] }));
+    var n = V.countTrue(state.filled);
+    read.innerHTML = V.fracHTML(n, d, "huge");
+    FA.clear(msg);
+    msg.appendChild(el("p", "", T("shadedParts", { a: n, b: d })));
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(2, 10, d, function (v) {
+    d = v; state.filled = V.boolArr(d, Math.min(V.countTrue(state.filled), d)); refresh();
+  }, T("denominator")).node);
+  var swap = el("button", "btn", L({ en: "Change shape", ms: "Tukar bentuk" }));
+  swap.onclick = function () { kindIdx = (kindIdx + 1) % kinds.length; refresh(); };
+  ctl.appendChild(swap);
+  var msg = el("div", "");
+  host.appendChild(el("p", "", T("tapToShade")));
+  host.appendChild(ctl);
+  host.appendChild(padHost);
+  host.appendChild(read);
+  host.appendChild(msg);
+  refresh();
+};
+
+/* 2 — picture, then reveal the fraction */
+SEE.readPlay = function (host) {
+  var kinds = ["bar", "circle", "choc"];
+  var picHost = el("div", ""), ansHost = el("div", "fracbox"), d, n, k;
+  function fresh() {
+    d = FA.ri(2, 10); n = FA.ri(1, d - 1); k = FA.pick(kinds);
+    FA.clear(picHost); FA.clear(ansHost);
+    picHost.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: k, w: k === "circle" ? 180 : 400, h: 54 }));
+  }
+  var row = el("div", "btn-row");
+  var reveal = el("button", "btn go", L({ en: "Show the fraction", ms: "Tunjukkan pecahan" }));
+  reveal.onclick = function () {
+    FA.clear(ansHost);
+    ansHost.innerHTML = V.fracHTML(n, d, "huge");
+    ansHost.appendChild(liveLabel(L({ en: n + " shaded parts out of " + d + " equal parts", ms: n + " bahagian dilorek daripada " + d + " bahagian sama besar" })));
+  };
+  var again = el("button", "btn", T("newOne"));
+  again.onclick = fresh;
+  row.appendChild(reveal); row.appendChild(again);
+  host.appendChild(picHost); host.appendChild(row); host.appendChild(ansHost);
+  fresh();
+};
+
+/* 3 — proper vs improper slider */
+SEE.properPlay = function (host) {
+  var d = 4, n = 3;
+  var pic = el("div", ""), verdict = el("div", "callout");
+  function refresh() {
+    FA.clear(pic);
+    pic.innerHTML = V.fracHTML(n, d, "huge");
+    pic.appendChild(V.fractionSVG(n, d, { kind: "bar", w: 360, h: 40 }));
+    verdict.innerHTML = "<strong>" + (n < d ? T("isProper") : (n === d ? T("isOne") : T("isImproper"))) + "</strong>";
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(1, 12, n, function (v) { n = v; refresh(); }, T("numerator")).node);
+  ctl.appendChild(W.stepper(2, 8, d, function (v) { d = v; refresh(); }, T("denominator")).node);
+  host.appendChild(ctl); host.appendChild(pic); host.appendChild(verdict);
+  refresh();
+};
+
+/* 4 — build a mixed number */
+SEE.mixedPlay = function (host) {
+  var w = 1, d = 4, n = 1;
+  var pic = el("div", ""), read = el("div", "fracbox");
+  function refresh() {
+    FA.clear(pic); FA.clear(read);
+    var row = el("div", "fracbox");
+    for (var i = 0; i < w; i++) row.appendChild(V.wholeSVG(d, V.boolArr(d, d), { kind: "circle", w: 110 }));
+    if (n > 0) row.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: "circle", w: 110, color: "#FF9F1C" }));
+    pic.appendChild(row);
+    read.innerHTML = (n > 0 ? V.mixedHTML(w, n, d) : '<span class="mixed">' + w + "</span>") +
+      '<span style="font-weight:800;font-size:1.2rem;margin-left:10px">= ' + w + " " +
+      L({ en: "whole", ms: "keseluruhan" }) + (n > 0 ? " + " + n + "/" + d : "") + "</span>";
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(1, 4, w, function (v) { w = v; refresh(); }, L({ en: "Whole cakes", ms: "Kek penuh" })).node);
+  ctl.appendChild(W.stepper(0, 7, n, function (v) { n = Math.min(v, d - 1); refresh(); }, L({ en: "Extra parts", ms: "Bahagian tambahan" })).node);
+  ctl.appendChild(W.stepper(2, 8, d, function (v) { d = v; if (n >= d) n = d - 1; refresh(); }, T("denominator")).node);
+  host.appendChild(ctl); host.appendChild(pic); host.appendChild(read);
+  refresh();
+};
+
+/* 5 — equivalent stacker */
+SEE.equivPlay = function (host) {
+  var n = 1, d = 2, m = 2;
+  var pic = el("div", ""), read = el("div", "fracbox");
+  function refresh() {
+    FA.clear(pic); FA.clear(read);
+    pic.appendChild(V.wholeSVG(d, V.boolArr(d, n), { kind: "bar", w: 420, h: 48 }));
+    pic.appendChild(liveLabel(n + "/" + d));
+    pic.appendChild(V.wholeSVG(d * m, V.boolArr(d * m, n * m), { kind: "bar", w: 420, h: 48, color: "#16B79A" }));
+    pic.appendChild(liveLabel((n * m) + "/" + (d * m)));
+    read.innerHTML = V.fracHTML(n, d, "big") + '<span style="font-size:1.6rem;font-weight:800">=</span>' +
+      V.fracHTML(n * m, d * m, "big") +
+      '<span style="font-weight:700;margin-left:10px">(× ' + m + " / × " + m + ")</span>";
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(1, 5, n, function (v) { n = Math.min(v, d - 1) || 1; refresh(); }, T("numerator")).node);
+  ctl.appendChild(W.stepper(2, 6, d, function (v) { d = v; if (n >= d) n = d - 1; refresh(); }, T("denominator")).node);
+  ctl.appendChild(W.stepper(1, 5, m, function (v) { m = v; refresh(); }, L({ en: "Multiply by", ms: "Darab dengan" })).node);
+  host.appendChild(ctl); host.appendChild(pic); host.appendChild(read);
+  host.appendChild(el("div", "callout tip", T("labNote")));
+  refresh();
+};
+
+/* 6 — comparer */
+SEE.comparePlay = function (host) {
+  var a = [1, 2], b = [1, 4];
+  var pic = el("div", ""), read = el("div", "fracbox");
+  function refresh() {
+    FA.clear(pic); FA.clear(read);
+    pic.appendChild(V.wholeSVG(a[1], V.boolArr(a[1], a[0]), { kind: "bar", w: 420, h: 44 }));
+    pic.appendChild(liveLabel(a[0] + "/" + a[1]));
+    pic.appendChild(V.wholeSVG(b[1], V.boolArr(b[1], b[0]), { kind: "bar", w: 420, h: 44, color: "#FF9F1C" }));
+    pic.appendChild(liveLabel(b[0] + "/" + b[1]));
+    var sign = (a[0] / a[1] > b[0] / b[1]) ? ">" : (a[0] / a[1] < b[0] / b[1] ? "<" : "=");
+    read.innerHTML = V.fracHTML(a[0], a[1], "big") +
+      '<span style="font-size:2.2rem;font-weight:800;color:var(--grape)">' + sign + "</span>" +
+      V.fracHTML(b[0], b[1], "big");
+  }
+  var ctl = el("div", "lab-grid");
+  var c1 = el("div", "fracbox");
+  c1.appendChild(W.stepper(1, 9, a[0], function (v) { a[0] = Math.min(v, a[1]); refresh(); }, T("numerator")).node);
+  c1.appendChild(W.stepper(2, 10, a[1], function (v) { a[1] = v; if (a[0] > a[1]) a[0] = a[1]; refresh(); }, T("denominator")).node);
+  var c2 = el("div", "fracbox");
+  c2.appendChild(W.stepper(1, 9, b[0], function (v) { b[0] = Math.min(v, b[1]); refresh(); }, T("numerator")).node);
+  c2.appendChild(W.stepper(2, 10, b[1], function (v) { b[1] = v; if (b[0] > b[1]) b[0] = b[1]; refresh(); }, T("denominator")).node);
+  ctl.appendChild(c1); ctl.appendChild(c2);
+  host.appendChild(ctl); host.appendChild(pic); host.appendChild(read);
+  refresh();
+};
+
+/* 7 & 11 — repeatable sandbox question */
+function sandbox(topic, level) {
+  return function (host) {
+    var slot = el("div", "");
+    host.appendChild(slot);
+    function go() {
+      W.renderQuestion(slot, FA.bankAPI.makeQuestion(topic, level), function () {
+        var row = el("div", "btn-row end");
+        var b = el("button", "btn", T("newOne"));
+        b.onclick = go;
+        row.appendChild(b);
+        slot.appendChild(row);
+      });
+    }
+    go();
+  };
+}
+
+/* 8 — quantity splitter */
+SEE.qtyPlay = function (host) {
+  var d = 3, per = 4, n = 1;
+  var emoji = "🍎";
+  var pic = el("div", ""), read = el("div", "");
+  function refresh() {
+    FA.clear(pic); FA.clear(read);
+    var total = d * per;
+    pic.appendChild(V.itemRow(total, emoji));
+    var g = el("div", "groupgrid");
+    for (var i = 0; i < d; i++) {
+      var b = el("div", "groupbox");
+      if (i < n) { b.style.background = "#FFF0CC"; b.style.borderStyle = "solid"; }
+      for (var k = 0; k < per; k++) b.appendChild(el("span", "", emoji));
+      g.appendChild(b);
+    }
+    pic.appendChild(g);
+    read.innerHTML = '<div class="callout tip"><strong>' + n + "/" + d + " " + L({ en: "of", ms: "daripada" }) + " " + total +
+      " = " + (per * n) + "</strong><br>" + L({ en: total + " ÷ " + d + " = " + per + " in each group, then " + per + " × " + n + " = " + (per * n) + ".",
+                                                ms: total + " ÷ " + d + " = " + per + " dalam setiap kumpulan, kemudian " + per + " × " + n + " = " + (per * n) + "." }) + "</div>";
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(2, 6, d, function (v) { d = v; if (n > d) n = d; refresh(); }, L({ en: "Equal groups", ms: "Kumpulan sama" })).node);
+  ctl.appendChild(W.stepper(1, 6, per, function (v) { per = v; refresh(); }, L({ en: "In each group", ms: "Dalam setiap kumpulan" })).node);
+  ctl.appendChild(W.stepper(1, 6, n, function (v) { n = Math.min(v, d); refresh(); }, L({ en: "Groups taken", ms: "Kumpulan diambil" })).node);
+  host.appendChild(ctl); host.appendChild(pic); host.appendChild(read);
+  refresh();
+};
+
+/* 9 / 10 — add & subtract sandbox */
+function opPlay(isAdd) {
+  return function (host) {
+    var d = 5, a = 1, b = 2;
+    var pic = el("div", ""), read = el("div", "fracbox");
+    function refresh() {
+      if (isAdd && a + b > d) b = d - a;
+      if (!isAdd && b > a) b = a;
+      FA.clear(pic); FA.clear(read);
+      pic.appendChild(V.wholeSVG(d, V.boolArr(d, a), { kind: "bar", w: 420, h: 40 }));
+      pic.appendChild(liveLabel(a + "/" + d));
+      pic.appendChild(V.wholeSVG(d, V.boolArr(d, b), { kind: "bar", w: 420, h: 40, color: "#FF9F1C" }));
+      pic.appendChild(liveLabel((isAdd ? "+ " : "− ") + b + "/" + d));
+      var r = isAdd ? a + b : a - b;
+      pic.appendChild(V.wholeSVG(d, V.boolArr(d, r), { kind: "bar", w: 420, h: 40, color: "#16B79A" }));
+      pic.appendChild(liveLabel("= " + r + "/" + d));
+      read.innerHTML = V.fracHTML(a, d, "big") + '<span style="font-size:1.8rem;font-weight:800">' + (isAdd ? "+" : "−") + "</span>" +
+        V.fracHTML(b, d, "big") + '<span style="font-size:1.8rem;font-weight:800">=</span>' + V.fracHTML(r, d, "big");
+    }
+    var ctl = el("div", "fracbox");
+    ctl.appendChild(W.stepper(1, 9, a, function (v) { a = Math.min(v, d); refresh(); }, L({ en: "First numerator", ms: "Pengangka pertama" })).node);
+    ctl.appendChild(W.stepper(1, 9, b, function (v) { b = v; refresh(); }, L({ en: "Second numerator", ms: "Pengangka kedua" })).node);
+    ctl.appendChild(W.stepper(2, 10, d, function (v) { d = v; if (a > d) a = d; refresh(); }, L({ en: "Same denominator", ms: "Penyebut yang sama" })).node);
+    host.appendChild(ctl); host.appendChild(pic); host.appendChild(read);
+    host.appendChild(el("div", "callout tip", L(isAdd
+      ? { en: "The denominator never changes. Only the numerators are added.", ms: "Penyebut tidak pernah berubah. Hanya pengangka ditambah." }
+      : { en: "The denominator never changes. Only the numerators are subtracted.", ms: "Penyebut tidak pernah berubah. Hanya pengangka ditolak." })));
+    refresh();
+  };
+}
+
+/* 11 — guided word problem walkthrough */
+SEE.wordPlay = function (host) {
+  var d = 4, per = 3, total = d * per, name = FA.pick(["Aiman", "Nurul", "Mei Ling", "Danish"]);
+  host.appendChild(el("div", "callout", L({
+    en: "<strong>" + name + " has " + total + " sweets. " + name + " gives 1/" + d + " of them to a friend. How many sweets is that?</strong>",
+    ms: "<strong>" + name + " mempunyai " + total + " biji gula-gula. " + name + " memberikan 1/" + d + " daripadanya kepada seorang rakan. Berapakah bilangannya?</strong>"
+  })));
+  var steps = [
+    { q: { en: "Step 1 — What is the whole?", ms: "Langkah 1 — Apakah keseluruhannya?" },
+      a: { en: "The whole is all " + total + " sweets.", ms: "Keseluruhannya ialah kesemua " + total + " biji gula-gula." } },
+    { q: { en: "Step 2 — What does the denominator tell us?", ms: "Langkah 2 — Apakah yang diberitahu oleh penyebut?" },
+      a: { en: "Share the sweets into " + d + " equal groups: " + total + " ÷ " + d + " = " + per + ".", ms: "Bahagikan gula-gula kepada " + d + " kumpulan sama banyak: " + total + " ÷ " + d + " = " + per + "." } },
+    { q: { en: "Step 3 — What does the numerator tell us?", ms: "Langkah 3 — Apakah yang diberitahu oleh pengangka?" },
+      a: { en: "Take 1 group, so the answer is " + per + " sweets.", ms: "Ambil 1 kumpulan, jadi jawapannya ialah " + per + " biji gula-gula." } }
+  ];
+  steps.forEach(function (s) {
+    var box = el("div", "card flat");
+    box.style.margin = "10px 0";
+    box.appendChild(el("strong", "", L(s.q)));
+    var ansEl = el("p", "");
+    ansEl.style.display = "none";
+    ansEl.innerHTML = L(s.a);
+    var b = el("button", "btn", L({ en: "Show", ms: "Tunjuk" }));
+    b.style.marginTop = "8px";
+    b.onclick = function () { ansEl.style.display = "block"; b.disabled = true; };
+    box.appendChild(b); box.appendChild(ansEl);
+    host.appendChild(box);
+  });
+  host.appendChild(V.itemRow(total, "🍬"));
+};
+
+/* ---------------- lesson definitions ---------------- */
+var LESSONS = [
+  {
+    id: "m1", topic: "concept", icon: "🍕",
+    title: { en: "What is a fraction?", ms: "Apakah itu pecahan?" },
+    discover: { en: "Two friends want to share one pizza fairly. Look at the two pizzas below. Which one is a fair share?",
+                ms: "Dua orang rakan mahu berkongsi sebiji piza secara adil. Lihat dua piza di bawah. Yang manakah pembahagian yang adil?" },
+    discoverVisual: function (host) {
+      var row = el("div", "fracbox");
+      var a = el("div", "");
+      a.appendChild(V.wholeSVG(4, [true, true, false, false], { kind: "circle", w: 150 }));
+      a.appendChild(liveLabel(L({ en: "Equal parts ✅", ms: "Bahagian sama besar ✅" })));
+      var b = el("div", "");
+      b.appendChild(V.wholeSVG(4, [true, true, false, false], { kind: "bar", w: 260, h: 60, unequal: [0.45, 0.3, 0.15, 0.1] }));
+      b.appendChild(liveLabel(L({ en: "Unequal parts ❌", ms: "Bahagian tidak sama besar ❌" })));
+      row.appendChild(a); row.appendChild(b);
+      host.appendChild(row);
+    },
+    explain: [
+      { en: "A fraction tells us about a part of one whole thing.", ms: "Pecahan memberitahu kita tentang sebahagian daripada satu keseluruhan." },
+      { en: "The whole must always be cut into <span class='keyword'>equal parts</span>. If the parts are different sizes, we cannot write a fraction.",
+        ms: "Keseluruhan mesti sentiasa dipotong kepada <span class='keyword'>bahagian yang sama besar</span>. Jika saiz bahagian berbeza, kita tidak boleh menulis pecahan." },
+      { en: "In 3/4, the top number 3 is the <span class='keyword'>numerator</span> — how many parts we take.",
+        ms: "Dalam 3/4, nombor atas 3 ialah <span class='keyword'>pengangka</span> — berapa bahagian yang diambil." },
+      { en: "In 3/4, the bottom number 4 is the <span class='keyword'>denominator</span> — how many equal parts make the whole.",
+        ms: "Dalam 3/4, nombor bawah 4 ialah <span class='keyword'>penyebut</span> — berapa bahagian sama besar membentuk keseluruhan." }
+    ],
+    see: SEE.shadePlay
+  },
+  {
+    id: "m2", topic: "readwrite", icon: "✍️",
+    title: { en: "Reading and writing fractions", ms: "Membaca dan menulis pecahan" },
+    discover: { en: "Look at the shaded bar. Can you say the fraction out loud before you scroll down?",
+                ms: "Lihat bar yang dilorek. Bolehkah kamu menyebut pecahannya sebelum menatal ke bawah?" },
+    discoverVisual: function (host) { host.appendChild(V.wholeSVG(5, V.boolArr(5, 3), { kind: "bar", w: 400, h: 54 })); },
+    explain: [
+      { en: "To write a fraction from a picture: count the shaded parts first, then count all the equal parts.",
+        ms: "Untuk menulis pecahan daripada gambar: kira bahagian yang dilorek dahulu, kemudian kira semua bahagian sama besar." },
+      { en: "Shaded parts go on top. All equal parts go at the bottom. So 3 shaded out of 5 is written 3/5.",
+        ms: "Bahagian dilorek di atas. Semua bahagian sama besar di bawah. Jadi 3 dilorek daripada 5 ditulis sebagai 3/5." },
+      { en: "We read 3/5 as “three fifths”, 1/2 as “one half”, 1/4 as “one quarter” and 3/4 as “three quarters”.",
+        ms: "Kita membaca 3/5 sebagai “tiga per lima”, 1/2 sebagai “satu per dua” atau “setengah”, 1/4 sebagai “satu per empat” atau “suku”." },
+      { en: "Careful: 3/5 and 5/3 are not the same fraction. The order matters.",
+        ms: "Hati-hati: 3/5 dan 5/3 bukan pecahan yang sama. Susunannya penting." }
+    ],
+    see: SEE.readPlay
+  },
+  {
+    id: "m3", topic: "properimp", icon: "⚖️",
+    title: { en: "Proper and improper fractions", ms: "Pecahan wajar dan tak wajar" },
+    discover: { en: "One bar is not enough to show 5/4. Why do you think a second bar is needed?",
+                ms: "Satu bar tidak cukup untuk menunjukkan 5/4. Mengapa agaknya bar kedua diperlukan?" },
+    discoverVisual: function (host) { host.appendChild(V.fractionSVG(5, 4, { kind: "bar", w: 380, h: 44 })); },
+    explain: [
+      { en: "A <span class='keyword'>proper fraction</span> has a numerator smaller than the denominator, like 3/4. It is less than 1 whole.",
+        ms: "<span class='keyword'>Pecahan wajar</span> mempunyai pengangka lebih kecil daripada penyebut, seperti 3/4. Nilainya kurang daripada 1 keseluruhan." },
+      { en: "An <span class='keyword'>improper fraction</span> has a numerator equal to or bigger than the denominator, like 5/4 or 4/4. It is 1 whole or more.",
+        ms: "<span class='keyword'>Pecahan tak wajar</span> mempunyai pengangka sama atau lebih besar daripada penyebut, seperti 5/4 atau 4/4. Nilainya 1 keseluruhan atau lebih." },
+      { en: "4/4 fills exactly one whole, so any fraction with the same top and bottom number equals 1.",
+        ms: "4/4 memenuhi tepat satu keseluruhan, jadi mana-mana pecahan dengan nombor atas dan bawah yang sama bernilai 1." }
+    ],
+    see: SEE.properPlay
+  },
+  {
+    id: "m4", topic: "mixed", icon: "🍰",
+    title: { en: "Mixed numbers", ms: "Nombor bercampur" },
+    discover: { en: "There is one full cake and part of another. How would you say that amount in words?",
+                ms: "Terdapat satu kek penuh dan sebahagian daripada kek lain. Bagaimanakah kamu menyebut jumlah itu?" },
+    discoverVisual: function (host) {
+      var row = el("div", "fracbox");
+      row.appendChild(V.wholeSVG(2, [true, true], { kind: "circle", w: 130 }));
+      row.appendChild(V.wholeSVG(2, [true, false], { kind: "circle", w: 130, color: "#FF9F1C" }));
+      host.appendChild(row);
+    },
+    explain: [
+      { en: "A <span class='keyword'>mixed number</span> has a whole number and a proper fraction together, like 1 1/2.",
+        ms: "<span class='keyword'>Nombor bercampur</span> mempunyai nombor bulat dan pecahan wajar bersama, seperti 1 1/2." },
+      { en: "1 1/2 means 1 whole + 1/2. Say it as “one and a half”.",
+        ms: "1 1/2 bermaksud 1 keseluruhan + 1/2. Sebut sebagai “satu setengah”." },
+      { en: "To read a picture: count the completely shaded wholes first, then write the leftover part as a fraction.",
+        ms: "Untuk membaca gambar: kira keseluruhan yang dilorek penuh dahulu, kemudian tulis bahagian yang tinggal sebagai pecahan." }
+    ],
+    see: SEE.mixedPlay
+  },
+  {
+    id: "m5", topic: "equiv", icon: "🟰",
+    title: { en: "Equivalent fractions", ms: "Pecahan setara" },
+    discover: { en: "Two bars, cut differently, but the same amount is shaded. What do you notice?",
+                ms: "Dua bar, dipotong secara berbeza, tetapi jumlah lorekan yang sama. Apa yang kamu perasan?" },
+    discoverVisual: function (host) {
+      host.appendChild(V.wholeSVG(2, [true, false], { kind: "bar", w: 420, h: 46 }));
+      host.appendChild(liveLabel("1/2"));
+      host.appendChild(V.wholeSVG(4, [true, true, false, false], { kind: "bar", w: 420, h: 46, color: "#16B79A" }));
+      host.appendChild(liveLabel("2/4"));
+    },
+    explain: [
+      { en: "<span class='keyword'>Equivalent fractions</span> look different but have exactly the same value: 1/2 = 2/4 = 3/6 = 4/8.",
+        ms: "<span class='keyword'>Pecahan setara</span> kelihatan berbeza tetapi mempunyai nilai yang sama: 1/2 = 2/4 = 3/6 = 4/8." },
+      { en: "Cutting each part into more pieces does not change how much is shaded — it only changes how many pieces there are.",
+        ms: "Memotong setiap bahagian kepada lebih banyak kepingan tidak mengubah jumlah lorekan — ia hanya mengubah bilangan kepingan." },
+      { en: "The rule: multiply the numerator and the denominator by the same number. 1/2 × 2/2 = 2/4.",
+        ms: "Peraturannya: darab pengangka dan penyebut dengan nombor yang sama. 1/2 × 2/2 = 2/4." },
+      { en: "Adding the same number to the top and bottom does <em>not</em> work. Only multiplying (or dividing) does.",
+        ms: "Menambah nombor yang sama pada atas dan bawah <em>tidak</em> berkesan. Hanya mendarab (atau membahagi) yang betul." }
+    ],
+    see: SEE.equivPlay
+  },
+  {
+    id: "m6", topic: "compare", icon: "🔍",
+    title: { en: "Comparing fractions", ms: "Membandingkan pecahan" },
+    discover: { en: "Would you rather have 1/2 of a chocolate bar or 1/4 of the same bar? Look carefully before you decide.",
+                ms: "Kamu lebih suka 1/2 daripada sebatang coklat atau 1/4 daripada batang yang sama? Lihat dengan teliti sebelum memutuskan." },
+    discoverVisual: function (host) {
+      host.appendChild(V.wholeSVG(2, [true, false], { kind: "bar", w: 420, h: 44 }));
+      host.appendChild(liveLabel("1/2"));
+      host.appendChild(V.wholeSVG(4, [true, false, false, false], { kind: "bar", w: 420, h: 44, color: "#FF5D6C" }));
+      host.appendChild(liveLabel("1/4"));
+    },
+    explain: [
+      { en: "We use three signs: > means greater than, < means less than, = means equal to.",
+        ms: "Kita guna tiga tanda: > bermaksud lebih besar daripada, < bermaksud lebih kecil daripada, = bermaksud sama dengan." },
+      { en: "Same denominator? Just compare the numerators: 3/4 > 2/4, because 3 parts is more than 2 parts of the same size.",
+        ms: "Penyebut sama? Banding pengangka sahaja: 3/4 > 2/4, kerana 3 bahagian lebih banyak daripada 2 bahagian yang sama saiz." },
+      { en: "Same numerator? The bigger the denominator, the smaller the pieces: 1/4 < 1/2.",
+        ms: "Pengangka sama? Semakin besar penyebut, semakin kecil kepingannya: 1/4 < 1/2." },
+      { en: "The open side of the sign always faces the bigger fraction.",
+        ms: "Bahagian terbuka tanda sentiasa menghadap pecahan yang lebih besar." }
+    ],
+    see: SEE.comparePlay
+  },
+  {
+    id: "m7", topic: "order", icon: "📶",
+    title: { en: "Ordering fractions", ms: "Menyusun pecahan" },
+    discover: { en: "Three fraction cards are out of order. Which one is the smallest?",
+                ms: "Tiga kad pecahan tidak tersusun. Yang manakah paling kecil?" },
+    discoverVisual: function (host) {
+      var row = el("div", "fracbox");
+      [[3, 4], [1, 4], [2, 4]].forEach(function (c) {
+        var card = el("div", "ordercard");
+        card.innerHTML = V.fracHTML(c[0], c[1], "big");
+        card.appendChild(V.wholeSVG(c[1], V.boolArr(c[1], c[0]), { kind: "bar", w: 130, h: 26 }));
+        row.appendChild(card);
+      });
+      host.appendChild(row);
+    },
+    explain: [
+      { en: "To order fractions, compare them two at a time, then line them up.",
+        ms: "Untuk menyusun pecahan, banding dua demi dua, kemudian bariskan." },
+      { en: "With the same denominator, order the numerators: 1/4, 2/4, 3/4.",
+        ms: "Dengan penyebut yang sama, susun pengangkanya: 1/4, 2/4, 3/4." },
+      { en: "With the same numerator, a bigger denominator means a smaller fraction: 1/8, 1/4, 1/2.",
+        ms: "Dengan pengangka yang sama, penyebut lebih besar bermaksud pecahan lebih kecil: 1/8, 1/4, 1/2." },
+      { en: "Read the instruction carefully — smallest to largest is not the same as largest to smallest.",
+        ms: "Baca arahan dengan teliti — terkecil ke terbesar tidak sama dengan terbesar ke terkecil." }
+    ],
+    see: sandbox("order", 2)
+  },
+  {
+    id: "m8", topic: "quantity", icon: "🍎",
+    title: { en: "Fraction of a quantity", ms: "Pecahan daripada kuantiti" },
+    discover: { en: "Twelve apples are shared into 3 equal groups. How many apples are in one group?",
+                ms: "Dua belas biji epal dibahagikan kepada 3 kumpulan sama banyak. Berapakah bilangan epal dalam satu kumpulan?" },
+    discoverVisual: function (host) {
+      var g = el("div", "groupgrid");
+      for (var i = 0; i < 3; i++) {
+        var b = el("div", "groupbox");
+        for (var k = 0; k < 4; k++) b.appendChild(el("span", "", "🍎"));
+        g.appendChild(b);
+      }
+      host.appendChild(g);
+    },
+    explain: [
+      { en: "The denominator tells us how many equal groups to share the objects into.",
+        ms: "Penyebut memberitahu kita berapa kumpulan sama banyak untuk membahagikan objek." },
+      { en: "So 1/3 of 12 means 12 ÷ 3 = 4.",
+        ms: "Jadi 1/3 daripada 12 bermaksud 12 ÷ 3 = 4." },
+      { en: "The numerator tells us how many of those groups to take. 2/3 of 12 = 4 × 2 = 8.",
+        ms: "Pengangka memberitahu kita berapa kumpulan perlu diambil. 2/3 daripada 12 = 4 × 2 = 8." },
+      { en: "Two steps every time: divide by the denominator, then multiply by the numerator.",
+        ms: "Dua langkah setiap kali: bahagi dengan penyebut, kemudian darab dengan pengangka." }
+    ],
+    see: SEE.qtyPlay
+  },
+  {
+    id: "m9", topic: "add", icon: "➕",
+    title: { en: "Adding fractions", ms: "Menambah pecahan" },
+    discover: { en: "1/5 of a bar is shaded blue and 2/5 is shaded orange. How much is shaded altogether?",
+                ms: "1/5 bar dilorek biru dan 2/5 dilorek oren. Berapakah jumlah lorekan kesemuanya?" },
+    discoverVisual: function (host) {
+      host.appendChild(V.wholeSVG(5, [true, false, false, false, false], { kind: "bar", w: 420, h: 40 }));
+      host.appendChild(V.wholeSVG(5, [true, true, false, false, false], { kind: "bar", w: 420, h: 40, color: "#FF9F1C" }));
+      host.appendChild(V.wholeSVG(5, [true, true, true, false, false], { kind: "bar", w: 420, h: 40, color: "#16B79A" }));
+    },
+    explain: [
+      { en: "In Year 4 we add fractions that already have the <span class='keyword'>same denominator</span>.",
+        ms: "Dalam Tahun 4 kita menambah pecahan yang sudah mempunyai <span class='keyword'>penyebut yang sama</span>." },
+      { en: "Add the numerators only. The denominator stays exactly the same: 1/5 + 2/5 = 3/5.",
+        ms: "Tambah pengangka sahaja. Penyebut kekal sama: 1/5 + 2/5 = 3/5." },
+      { en: "Why? Because fifths added to fifths are still fifths — the size of each piece never changes.",
+        ms: "Mengapa? Kerana per lima campur per lima masih per lima — saiz setiap kepingan tidak berubah." },
+      { en: "A common mistake is 1/5 + 2/5 = 3/10. Adding the denominators makes the pieces smaller, which cannot be right.",
+        ms: "Kesilapan biasa ialah 1/5 + 2/5 = 3/10. Menambah penyebut menjadikan kepingan lebih kecil, jadi ia tidak betul." }
+    ],
+    see: opPlay(true)
+  },
+  {
+    id: "m10", topic: "subtract", icon: "➖",
+    title: { en: "Subtracting fractions", ms: "Menolak pecahan" },
+    discover: { en: "4/5 of a ribbon is left, then 1/5 is cut away. How much ribbon remains?",
+                ms: "4/5 daripada reben masih ada, kemudian 1/5 dipotong. Berapakah reben yang tinggal?" },
+    discoverVisual: function (host) {
+      host.appendChild(V.wholeSVG(5, V.boolArr(5, 4), { kind: "bar", w: 420, h: 40 }));
+      host.appendChild(V.wholeSVG(5, V.boolArr(5, 3), { kind: "bar", w: 420, h: 40, color: "#16B79A" }));
+    },
+    explain: [
+      { en: "Subtraction works the same way: the denominators must be the same.",
+        ms: "Penolakan berfungsi dengan cara yang sama: penyebut mesti sama." },
+      { en: "Subtract the numerators only and keep the denominator: 4/5 − 1/5 = 3/5.",
+        ms: "Tolak pengangka sahaja dan kekalkan penyebut: 4/5 − 1/5 = 3/5." },
+      { en: "Check your answer on a fraction bar — shade the first fraction, then cross out the parts taken away.",
+        ms: "Semak jawapan pada bar pecahan — lorek pecahan pertama, kemudian buang bahagian yang ditolak." }
+    ],
+    see: opPlay(false)
+  },
+  {
+    id: "m11", topic: "word", icon: "🧠",
+    title: { en: "Fraction word problems", ms: "Masalah berayat pecahan" },
+    discover: { en: "Word problems hide a fraction inside a story. The trick is to find the whole first.",
+                ms: "Masalah berayat menyembunyikan pecahan di dalam cerita. Rahsianya ialah cari keseluruhan dahulu." },
+    explain: [
+      { en: "Step 1: find the whole — the total number of sweets, pupils, ringgit or parts.",
+        ms: "Langkah 1: cari keseluruhan — jumlah gula-gula, murid, ringgit atau bahagian." },
+      { en: "Step 2: divide the whole by the denominator to find one group.",
+        ms: "Langkah 2: bahagi keseluruhan dengan penyebut untuk mencari satu kumpulan." },
+      { en: "Step 3: multiply by the numerator to find the answer.",
+        ms: "Langkah 3: darab dengan pengangka untuk mendapatkan jawapan." },
+      { en: "Step 4: read the question again. Does it ask for the part taken or the part left?",
+        ms: "Langkah 4: baca soalan sekali lagi. Adakah ia meminta bahagian yang diambil atau bahagian yang tinggal?" }
+    ],
+    see: SEE.wordPlay
+  }
+];
+
+window.FA.lessons = { LESSONS: LESSONS, panel: panel, bullets: bullets, sandbox: sandbox };
+})();
+
+/* =========================================================
+   Screens & navigation
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, S = FA.S, el = FA.el, T = FA.T, L = FA.L, V = FA.vis, W = FA.widgets;
+var LESSONS = FA.lessons.LESSONS;
+var B = FA.bankAPI;
+
+var main, header;
+
+/* ---------- helpers ---------- */
+function toast(msg) {
+  var t = FA.$("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function () { t.classList.remove("show"); }, 2200);
+}
+function starsFor(id) { return (S.modules[id] && S.modules[id].stars) || 0; }
+function isDone(id) { return !!(S.modules[id] && S.modules[id].done); }
+function unlocked(i) { return i === 0 || isDone(LESSONS[i - 1].id); }
+function doneCount() { var c = 0; LESSONS.forEach(function (l) { if (isDone(l.id)) c++; }); return c; }
+function nextLessonIndex() {
+  for (var i = 0; i < LESSONS.length; i++) if (!isDone(LESSONS[i].id)) return i;
+  return -1;
+}
+function totalStars() {
+  var s = 0;
+  LESSONS.forEach(function (l) { s += starsFor(l.id); });
+  if (S.finalBest) s += Math.round(S.finalBest.pct / 20);
+  return s;
+}
+function starRow(n, max) {
+  var out = "";
+  for (var i = 0; i < (max || 3); i++) out += i < n ? "⭐" : "☆";
+  return out;
+}
+function topicAccuracy(id) {
+  var t = S.topics[id];
+  if (!t || !t.total) return null;
+  return Math.round((t.correct / t.total) * 100);
+}
+function weakTopics() {
+  var out = [];
+  B.TOPICS.forEach(function (t) {
+    var st = S.topics[t.id];
+    if (st && st.total >= 3) {
+      var acc = st.correct / st.total;
+      if (acc < 0.7) out.push({ id: t.id, acc: Math.round(acc * 100) });
+    }
+  });
+  out.sort(function (a, b) { return a.acc - b.acc; });
+  return out;
+}
+function recordAnswer(topic, ok) {
+  if (!S.topics[topic]) S.topics[topic] = { correct: 0, total: 0 };
+  S.topics[topic].total++;
+  if (ok) S.topics[topic].correct++;
+  FA.save();
+}
+
+/* ---------- header ---------- */
+function renderHeader() {
+  FA.clear(header);
+  var inb = el("div", "topbar-in");
+  var brand = el("button", "brand");
+  brand.style.border = "0"; brand.style.background = "transparent"; brand.style.padding = "0";
+  brand.innerHTML = '<span class="logo">½</span><span class="bt">' + T("appName") + "</span>";
+  brand.onclick = function () { go("home"); };
+  inb.appendChild(brand);
+  inb.appendChild(el("div", "spacer"));
+  if (S.profile) {
+    var sc = el("div", "starcount", "⭐ " + totalStars());
+    inb.appendChild(sc);
+  }
+  var lang = el("div", "lang");
+  ["en", "ms"].forEach(function (code) {
+    var b = el("button", S.lang === code ? "on" : "", code === "en" ? "English" : "Bahasa Melayu");
+    b.onclick = function () {
+      if (S.lang === code) return;
+      S.lang = code; FA.save(); renderHeader(); go(S.screen, S.params);
+    };
+    lang.appendChild(b);
+  });
+  inb.appendChild(lang);
+  header.appendChild(inb);
+}
+
+/* ---------- router ---------- */
+var ROUTES = {};
+function go(name, params) {
+  S.screen = name; S.params = params;
+  FA.clear(main);
+  window.scrollTo({ top: 0, behavior: "auto" });
+  (ROUTES[name] || ROUTES.home)(params || {});
+  renderHeader();
+}
+function backBar(to, label) {
+  var row = el("div", "btn-row");
+  var b = el("button", "btn ghost", "← " + (label || T("back")));
+  b.onclick = function () { go(to || "home"); };
+  row.appendChild(b);
+  row.style.marginTop = "10px";
+  return row;
+}
+
+/* ---------- profile setup ---------- */
+var AVATARS = ["🦊", "🐼", "🐯", "🦉", "🐙", "🐳", "🦜", "🐢", "🦄", "🐝"];
+ROUTES.setup = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h1", "", "½ " + T("appName")));
+  card.appendChild(el("p", "", T("tagline") + " · KSSR"));
+  card.appendChild(el("h3", "", T("askName")));
+  var input = el("input", "");
+  input.type = "text"; input.placeholder = T("namePh"); input.maxLength = 16;
+  card.appendChild(input);
+  card.appendChild(el("h3", "", T("pickAvatar")));
+  var chosen = AVATARS[0];
+  var grid = el("div", "avatar-pick");
+  AVATARS.forEach(function (a) {
+    var b = el("button", "av" + (a === chosen ? " on" : ""), a);
+    b.onclick = function () {
+      chosen = a;
+      Array.prototype.forEach.call(grid.children, function (c) { c.classList.remove("on"); });
+      b.classList.add("on");
+    };
+    grid.appendChild(b);
+  });
+  card.appendChild(grid);
+  var row = el("div", "btn-row");
+  var start = el("button", "btn go", T("start"));
+  start.onclick = function () {
+    var nm = (input.value || "").trim();
+    if (!nm) { toast(T("needName")); input.focus(); return; }
+    S.profile = { name: nm, avatar: chosen };
+    FA.save();
+    go("home");
+  };
+  row.appendChild(start);
+  card.appendChild(row);
+  card.appendChild(el("p", "", '<span style="font-size:.8rem;color:var(--ink-soft)">' +
+    (FA.store.ok ? T("savedLocal") : T("noSave")) + "</span>"));
+  main.appendChild(card);
+  input.focus();
+};
+
+/* ---------- home ---------- */
+ROUTES.home = function () {
+  if (!S.profile) return ROUTES.setup();
+  var pct = Math.round((doneCount() / LESSONS.length) * 100);
+  var hero = el("div", "hero");
+  var top = el("div", "");
+  top.style.display = "flex"; top.style.gap = "14px"; top.style.alignItems = "center";
+  top.appendChild(el("div", "avatar-badge", S.profile.avatar));
+  var ht = el("div", "");
+  ht.appendChild(el("h1", "", T("hello", { name: S.profile.name })));
+  ht.appendChild(el("div", "sub", T("appName") + " · " + T("tagline")));
+  top.appendChild(ht);
+  hero.appendChild(top);
+  var pb = el("div", "progressbar");
+  pb.innerHTML = '<i style="width:' + pct + '%"></i>';
+  hero.appendChild(el("div", "sub", T("yourProgress") + " — " + pct + "% (" + doneCount() + "/" + LESSONS.length + ")"));
+  hero.appendChild(pb);
+  var ni = nextLessonIndex();
+  var row = el("div", "btn-row");
+  row.style.marginTop = "14px";
+  var cont = el("button", "btn", ni === -1 ? T("allDone") : (doneCount() ? T("continueLearn") : T("startLearning")));
+  cont.onclick = function () { go(ni === -1 ? "map" : "lesson", { id: LESSONS[ni === -1 ? 0 : ni].id }); };
+  row.appendChild(cont);
+  hero.appendChild(row);
+  main.appendChild(hero);
+
+  var tiles = el("div", "menu-grid");
+  [["t1", "📚", "mLearn", "mLearnD", "map"],
+   ["t2", "🎯", "mPractise", "mPractiseD", "practice"],
+   ["t3", "🏁", "mQuiz", "mQuizD", "quizhub"],
+   ["t4", "🧪", "mLab", "mLabD", "lab"],
+   ["t5", "📈", "mProgress", "mProgressD", "progress"]].forEach(function (t) {
+    var b = el("button", "menu-tile " + t[0]);
+    b.innerHTML = '<span class="ico">' + t[1] + '</span><span class="ttl">' + T(t[2]) + '</span><span class="desc">' + T(t[3]) + "</span>";
+    b.onclick = function () { go(t[4]); };
+    tiles.appendChild(b);
+  });
+  main.appendChild(tiles);
+
+  /* weak-topic nudge */
+  var weak = weakTopics();
+  if (weak.length) {
+    var c = el("div", "card");
+    c.appendChild(el("h3", "", "🎯 " + T("weakestFirst")));
+    c.appendChild(el("p", "", B.topicName(weak[0].id) + " — " + weak[0].acc + "%"));
+    var r = el("div", "btn-row");
+    var b2 = el("button", "btn warn", T("practiseTopic", { t: B.topicName(weak[0].id) }));
+    b2.onclick = function () { FA.quiz.run({ title: B.topicName(weak[0].id), questions: B.bank(weak[0].id, 6, 2), back: "home" }); };
+    r.appendChild(b2);
+    c.appendChild(r);
+    main.appendChild(c);
+  }
+
+  /* short path preview */
+  var pv = el("div", "card");
+  pv.appendChild(el("h3", "", T("learnPath")));
+  pv.appendChild(buildMap(true));
+  var more = el("div", "btn-row");
+  var mb = el("button", "btn", T("lessons") + " →");
+  mb.onclick = function () { go("map"); };
+  more.appendChild(mb);
+  pv.appendChild(more);
+  main.appendChild(pv);
+};
+
+/* ---------- progress map ---------- */
+function buildMap(preview) {
+  var wrapper = el("div", "map");
+  var start = nextLessonIndex();
+  var from = 0, to = LESSONS.length;
+  if (preview) { from = Math.max(0, (start === -1 ? LESSONS.length - 3 : start) - 1); to = Math.min(LESSONS.length, from + 3); }
+  for (var i = from; i < to; i++) {
+    (function (i) {
+      var l = LESSONS[i];
+      var open = unlocked(i), done = isDone(l.id);
+      var node = el("div", "map-node");
+      var rail = el("div", "map-rail");
+      var dot = el("div", "map-dot " + (done ? "done" : (open ? "now" : "lock")), done ? "✓" : (open ? String(i + 1) : "🔒"));
+      rail.appendChild(dot);
+      if (i < to - 1) rail.appendChild(el("div", "map-line"));
+      node.appendChild(rail);
+      var item = el(open ? "button" : "div", "map-item" + (open ? "" : " locked"));
+      item.innerHTML = '<span class="ico">' + l.icon + '</span>';
+      var txt = el("div", "");
+      txt.style.flex = "1";
+      txt.appendChild(el("div", "mt", L(l.title)));
+      txt.appendChild(el("div", "ms", open ? (done ? T("review") : T("goLesson")) : T("locked")));
+      item.appendChild(txt);
+      item.appendChild(el("div", "stars-mini", starRow(starsFor(l.id))));
+      if (open) item.onclick = function () { go("lesson", { id: l.id }); };
+      else item.onclick = function () { toast(T("lockedMsg")); };
+      node.appendChild(item);
+      wrapper.appendChild(node);
+    })(i);
+  }
+  return wrapper;
+}
+ROUTES.map = function () {
+  var c = el("div", "card");
+  c.appendChild(el("h2", "", "📚 " + T("learnPath")));
+  c.appendChild(buildMap(false));
+  var fin = el("div", "card flat");
+  fin.style.background = doneCount() === LESSONS.length ? "#FFF3E2" : "#F0F1F7";
+  fin.appendChild(el("h3", "", "🏆 " + T("finalChallenge")));
+  fin.appendChild(el("p", "", doneCount() === LESSONS.length ? T("finalChallengeD") : T("finalLocked")));
+  if (doneCount() === LESSONS.length) {
+    var r = el("div", "btn-row");
+    var b = el("button", "btn primary", T("start"));
+    b.onclick = function () { FA.quiz.runFinal(); };
+    r.appendChild(b);
+    fin.appendChild(r);
+  }
+  c.appendChild(fin);
+  main.appendChild(c);
+  main.appendChild(backBar("home", T("home")));
+};
+
+/* ---------- lesson viewer ---------- */
+ROUTES.lesson = function (p) {
+  var idx = 0;
+  for (var i = 0; i < LESSONS.length; i++) if (LESSONS[i].id === p.id) idx = i;
+  var l = LESSONS[idx];
+  if (!unlocked(idx)) { toast(T("lockedMsg")); return go("map"); }
+
+  var stepKeys = ["stepDiscover", "stepExplain", "stepSee", "stepTry", "stepPractise", "stepQuiz", "stepReward"];
+  var step = 0, quizScore = 0;
+
+  var card = el("div", "card");
+  var head = el("div", "");
+  head.innerHTML = '<span class="pill">' + T("lessons") + " " + (idx + 1) + "/" + LESSONS.length + "</span>";
+  card.appendChild(head);
+  card.appendChild(el("h2", "", l.icon + " " + L(l.title)));
+  var chips = el("div", "steps");
+  card.appendChild(chips);
+  var body = el("div", "");
+  card.appendChild(body);
+  main.appendChild(card);
+  main.appendChild(backBar("map", T("lessons")));
+
+  function drawChips() {
+    FA.clear(chips);
+    stepKeys.forEach(function (k, i) {
+      chips.appendChild(el("span", "step-chip " + (i === step ? "on" : (i < step ? "done" : "")), T(k)));
+    });
+  }
+  function nextBtn(labelKey, fn) {
+    var bar = el("div", "sticky-actions");
+    var row = el("div", "btn-row end");
+    var b = el("button", "btn primary", T(labelKey || "next"));
+    b.onclick = fn || function () { step++; draw(); };
+    row.appendChild(b); bar.appendChild(row);
+    return bar;
+  }
+
+  function draw() {
+    drawChips();
+    FA.clear(body);
+    var box = el("div", "rise");
+    body.appendChild(box);
+
+    if (step === 0) {
+      box.appendChild(el("h3", "", "🔎 " + T("whatNotice")));
+      box.appendChild(el("p", "", L(l.discover)));
+      if (l.discoverVisual) l.discoverVisual(box);
+      box.appendChild(nextBtn("next"));
+      return;
+    }
+    if (step === 1) {
+      box.appendChild(el("h3", "", "💡 " + T("stepExplain")));
+      box.appendChild(FA.lessons.bullets(l.explain));
+      box.appendChild(nextBtn("next"));
+      return;
+    }
+    if (step === 2) {
+      box.appendChild(el("h3", "", "🎛️ " + T("seeItTitle")));
+      var play = el("div", "");
+      box.appendChild(play);
+      l.see(play);
+      box.appendChild(nextBtn("next"));
+      return;
+    }
+    if (step === 3) {
+      box.appendChild(el("h3", "", "✏️ " + T("tryItTitle")));
+      var slot = el("div", "");
+      box.appendChild(slot);
+      W.renderQuestion(slot, B.makeQuestion(l.topic, 1), function (ok) {
+        recordAnswer(l.topic, ok);
+        slot.appendChild(nextBtn("next"));
+      });
+      return;
+    }
+    if (step === 4) {
+      box.appendChild(el("h3", "", "🏋️ " + T("practiseTitle")));
+      var slot2 = el("div", "");
+      box.appendChild(slot2);
+      FA.quiz.sequence(slot2, B.bank(l.topic, 5, 2), l.topic, function () {
+        slot2.appendChild(nextBtn("next"));
+      });
+      return;
+    }
+    if (step === 5) {
+      box.appendChild(el("h3", "", "🏁 " + T("miniQuizTitle")));
+      var slot3 = el("div", "");
+      box.appendChild(slot3);
+      FA.quiz.sequence(slot3, B.bank(l.topic, 5, 3), l.topic, function (score) {
+        quizScore = score;
+        slot3.appendChild(nextBtn("next"));
+      });
+      return;
+    }
+    /* reward */
+    var stars = quizScore >= 5 ? 3 : (quizScore >= 4 ? 2 : (quizScore >= 3 ? 1 : 0));
+    var prev = S.modules[l.id] || { stars: 0 };
+    S.modules[l.id] = { done: true, stars: Math.max(prev.stars || 0, stars), best: Math.max(prev.best || 0, quizScore) };
+    FA.quiz.checkBadges();
+    FA.save();
+    box.appendChild(el("div", "starburst", starRow(stars)));
+    box.appendChild(el("h2", "", "🎉 " + T("lessonDone")));
+    box.appendChild(el("p", "", T("starsEarned", { n: stars }) + " " + T("yourScore") + ": " + quizScore + "/5."));
+    if (idx + 1 < LESSONS.length) {
+      box.appendChild(el("p", "", "🔓 " + T("unlockedNext", { t: L(LESSONS[idx + 1].title) })));
+    }
+    var row = el("div", "btn-row");
+    if (idx + 1 < LESSONS.length) {
+      var nb = el("button", "btn go", L(LESSONS[idx + 1].title) + " →");
+      nb.onclick = function () { go("lesson", { id: LESSONS[idx + 1].id }); };
+      row.appendChild(nb);
+    } else {
+      var fb = el("button", "btn go", T("finalChallenge"));
+      fb.onclick = function () { FA.quiz.runFinal(); };
+      row.appendChild(fb);
+    }
+    var hb = el("button", "btn", T("home"));
+    hb.onclick = function () { go("home"); };
+    row.appendChild(hb);
+    box.appendChild(row);
+  }
+  draw();
+};
+
+/* ---------- fraction lab ---------- */
+ROUTES.lab = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", "🧪 " + T("labTitle")));
+  card.appendChild(el("p", "", T("labIntro")));
+
+  var n = 3, d = 4;
+  var state = { filled: V.boolArr(4, 3) };
+  var view = el("div", ""), read = el("div", "fracbox"), note = el("div", "callout tip"), equiv = el("div", "");
+
+  function syncFilled() { state.filled = V.boolArr(d, Math.min(n, d)); }
+  function refresh() {
+    FA.clear(view); FA.clear(read); FA.clear(equiv);
+    read.innerHTML = V.fracHTML(n, d, "huge");
+    var rowBar = el("div", "");
+    rowBar.appendChild(V.fractionSVG(n, d, { kind: "bar", w: 420, h: 46 }));
+    var rowCircle = el("div", "fracbox");
+    rowCircle.appendChild(V.fractionSVG(n, d, { kind: "circle", w: 150 }));
+    view.appendChild(rowBar);
+    view.appendChild(rowCircle);
+    note.innerHTML = "<strong>" + (n < d ? T("isProper") : (n === d ? T("isOne") : T("isImproper"))) + "</strong><br>" +
+      T("shadedParts", { a: n, b: d });
+    /* equivalent row */
+    equiv.appendChild(el("h3", "", T("equivRow")));
+    if (n <= d) {
+      for (var m = 1; m <= 4; m++) {
+        if (d * m > 24) break;
+        equiv.appendChild(V.wholeSVG(d * m, V.boolArr(d * m, n * m), { kind: "bar", w: 420, h: 34, color: V.FILLS[(m - 1) % V.FILLS.length] }));
+        equiv.appendChild(el("div", "shape-label", (n * m) + "/" + (d * m)));
+      }
+      equiv.appendChild(el("div", "callout", T("labNote")));
+    } else {
+      equiv.appendChild(el("p", "", L({ en: "Make the numerator smaller than the denominator to see equivalent fractions.",
+                                        ms: "Jadikan pengangka lebih kecil daripada penyebut untuk melihat pecahan setara." })));
+    }
+  }
+  var ctl = el("div", "fracbox");
+  ctl.appendChild(W.stepper(1, 12, n, function (v) { n = v; syncFilled(); refresh(); }, T("numerator")).node);
+  ctl.appendChild(W.stepper(2, 12, d, function (v) { d = v; if (n > 12) n = 12; syncFilled(); refresh(); }, T("denominator")).node);
+  card.appendChild(el("h3", "", T("builder")));
+  card.appendChild(ctl);
+  card.appendChild(read);
+  card.appendChild(view);
+  card.appendChild(note);
+  card.appendChild(equiv);
+  refresh();
+  main.appendChild(card);
+
+  /* free shading pad */
+  var card2 = el("div", "card");
+  card2.appendChild(el("h3", "", "🖌️ " + T("tapToShade")));
+  var pd = 6, ps = { filled: V.boolArr(6, 0) };
+  var padHost = el("div", ""), padRead = el("div", "fracbox");
+  function drawPad() {
+    FA.clear(padHost); FA.clear(padRead);
+    padHost.appendChild(V.shadePad(pd, ps, { kind: "choc", color: "#9B5DE5" }));
+    padRead.innerHTML = V.fracHTML(V.countTrue(ps.filled), pd, "big");
+  }
+  var pctl = el("div", "fracbox");
+  pctl.appendChild(W.stepper(2, 12, pd, function (v) { pd = v; ps.filled = V.boolArr(pd, 0); drawPad(); }, T("denominator")).node);
+  card2.appendChild(pctl); card2.appendChild(padHost); card2.appendChild(padRead);
+  drawPad();
+  main.appendChild(card2);
+
+  /* comparer */
+  var card3 = el("div", "card");
+  card3.appendChild(el("h3", "", "⚖️ " + T("compareTool")));
+  var cmp = el("div", "");
+  card3.appendChild(cmp);
+  FA.lessons.LESSONS[5].see(cmp);
+  main.appendChild(card3);
+  main.appendChild(backBar("home", T("home")));
+};
+
+/* ---------- practice hub ---------- */
+ROUTES.practice = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", "🎯 " + T("practiceHub")));
+  var weak = weakTopics();
+  if (weak.length) {
+    card.appendChild(el("p", "", T("weakestFirst") + ": " + B.topicName(weak[0].id) + " (" + weak[0].acc + "%)"));
+  } else {
+    card.appendChild(el("p", "", T("noWeak")));
+  }
+  var grid = el("div", "menu-grid");
+  B.TOPICS.forEach(function (t, i) {
+    var acc = topicAccuracy(t.id);
+    var b = el("button", "menu-tile t" + ((i % 5) + 1));
+    b.innerHTML = '<span class="ico">' + t.icon + '</span><span class="ttl">' + L(t.name) + '</span>' +
+      '<span class="desc">' + (acc === null ? T("notTried") : acc + "%") + "</span>";
+    b.onclick = function () {
+      FA.quiz.run({ title: L(t.name), questions: B.bank(t.id, 6, acc !== null && acc < 70 ? 2 : 3), back: "practice" });
+    };
+    grid.appendChild(b);
+  });
+  card.appendChild(grid);
+  main.appendChild(card);
+  main.appendChild(backBar("home", T("home")));
+};
+
+/* ---------- quiz hub ---------- */
+ROUTES.quizhub = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", "🏁 " + T("quizTitle")));
+  var grid = el("div", "menu-grid");
+  function tile(cls, icon, title, desc, fn) {
+    var b = el("button", "menu-tile " + cls);
+    b.innerHTML = '<span class="ico">' + icon + '</span><span class="ttl">' + title + '</span><span class="desc">' + desc + "</span>";
+    b.onclick = fn;
+    grid.appendChild(b);
+  }
+  tile("t1", "⚡", T("quickQuiz"), T("quickQuizD"), function () {
+    FA.quiz.run({ title: T("quickQuiz"), questions: B.mixedBank(10, 2), back: "quizhub" });
+  });
+  tile("t2", "📝", T("practiceTest"), T("practiceTestD"), function () {
+    FA.quiz.run({ title: T("practiceTest"), questions: B.mixedBank(20, 2), back: "quizhub" });
+  });
+  tile("t3", "🔥", T("challenge"), T("challengeD"), function () {
+    FA.quiz.run({ title: T("challenge"), questions: B.mixedBank(10, 3), back: "quizhub" });
+  });
+  tile("t4", "🎲", T("mixedQuiz"), T("mixedQuizD"), function () {
+    FA.quiz.run({ title: T("mixedQuiz"), questions: B.mixedBank(15, 2), back: "quizhub" });
+  });
+  tile("t5", "📚", T("topicQuiz"), T("topicQuizD"), function () { go("topicpick"); });
+  card.appendChild(grid);
+
+  var fin = el("div", "card flat");
+  fin.style.background = doneCount() === LESSONS.length ? "#FFF3E2" : "#F0F1F7";
+  fin.appendChild(el("h3", "", "🏆 " + T("finalChallenge")));
+  fin.appendChild(el("p", "", doneCount() === LESSONS.length ? T("finalChallengeD") : T("finalLocked")));
+  if (S.finalBest) fin.appendChild(el("p", "", T("bestScore", { p: S.finalBest.pct })));
+  if (doneCount() === LESSONS.length) {
+    var r = el("div", "btn-row");
+    var b = el("button", "btn primary", T("start"));
+    b.onclick = function () { FA.quiz.runFinal(); };
+    r.appendChild(b);
+    fin.appendChild(r);
+  }
+  card.appendChild(fin);
+  main.appendChild(card);
+  main.appendChild(backBar("home", T("home")));
+};
+
+ROUTES.topicpick = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", T("chooseTopic")));
+  var grid = el("div", "menu-grid");
+  B.TOPICS.forEach(function (t, i) {
+    var b = el("button", "menu-tile t" + ((i % 5) + 1));
+    b.innerHTML = '<span class="ico">' + t.icon + '</span><span class="ttl">' + L(t.name) + "</span>";
+    b.onclick = function () { FA.quiz.run({ title: L(t.name), questions: B.bank(t.id, 10, 2), back: "quizhub" }); };
+    grid.appendChild(b);
+  });
+  card.appendChild(grid);
+  main.appendChild(card);
+  main.appendChild(backBar("quizhub", T("quizTitle")));
+};
+
+/* ---------- progress ---------- */
+ROUTES.progress = function () {
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", "📈 " + T("mProgress")));
+  card.appendChild(el("p", "", "⭐ " + T("myStars") + ": <strong>" + totalStars() + "</strong>"));
+  var pct = Math.round((doneCount() / LESSONS.length) * 100);
+  var pb = el("div", "progressbar");
+  pb.innerHTML = '<i style="width:' + pct + '%"></i>';
+  card.appendChild(pb);
+  card.appendChild(el("div", "shape-label", doneCount() + "/" + LESSONS.length + " " + T("lessons")));
+
+  card.appendChild(el("h3", "", T("topicScores")));
+  var ul = el("ul", "tlist");
+  B.TOPICS.forEach(function (t) {
+    var acc = topicAccuracy(t.id);
+    var li = el("li", "");
+    li.innerHTML = '<span style="min-width:26px">' + t.icon + "</span><span style='flex:1;min-width:120px'>" + L(t.name) + "</span>";
+    var bar = el("div", "bar-stat");
+    bar.innerHTML = '<i style="width:' + (acc === null ? 0 : acc) + '%;background:' + (acc === null ? "#ccc" : (acc >= 80 ? "#16B79A" : (acc >= 60 ? "#FF9F1C" : "#FF5D6C"))) + '"></i>';
+    li.appendChild(bar);
+    li.appendChild(el("span", "", '<span style="min-width:46px;display:inline-block;text-align:right">' + (acc === null ? "–" : acc + "%") + "</span>"));
+    ul.appendChild(li);
+  });
+  card.appendChild(ul);
+
+  card.appendChild(el("h3", "", "🏅 " + T("badgesT")));
+  var bg = el("div", "badge-grid");
+  FA.quiz.BADGES.forEach(function (b) {
+    var got = !!S.badges[b.id];
+    var n = el("div", "badge" + (got ? "" : " off"));
+    n.innerHTML = '<span class="bi">' + b.icon + "</span>" + L(b.name) + '<br><span style="font-weight:600;color:var(--ink-soft)">' + L(b.how) + "</span>";
+    bg.appendChild(n);
+  });
+  card.appendChild(bg);
+
+  if (S.finalBest) {
+    card.appendChild(el("p", "", "🏆 " + T("finalChallenge") + " — " + T("bestScore", { p: S.finalBest.pct })));
+  }
+  var row = el("div", "btn-row");
+  var rb = el("button", "btn", T("resetAll"));
+  rb.onclick = function () {
+    if (window.confirm(T("resetSure"))) {
+      FA.store.del(FA.KEY);
+      S.profile = null; S.modules = {}; S.topics = {}; S.badges = {}; S.stars = 0; S.finalBest = null;
+      FA.save();
+      go("setup");
+    }
+  };
+  row.appendChild(rb);
+  card.appendChild(row);
+  main.appendChild(card);
+  main.appendChild(backBar("home", T("home")));
+};
+
+/* ---------- boot ---------- */
+function boot() {
+  header = FA.$("#topbar");
+  main = FA.$("#main");
+  FA.load();
+  renderHeader();
+  go(S.profile ? "home" : "setup");
+}
+
+window.FA.nav = { go: go, toast: toast, recordAnswer: recordAnswer, boot: boot, backBar: backBar,
+  starRow: starRow, doneCount: doneCount, totalStars: totalStars, topicAccuracy: topicAccuracy,
+  weakTopics: weakTopics, LESSON_COUNT: LESSONS.length, getMain: function () { return main; } };
+})();
+
+/* =========================================================
+   Quiz engine, results, badges, final assessment
+   ========================================================= */
+(function () {
+"use strict";
+var FA = window.FA, S = FA.S, el = FA.el, T = FA.T, L = FA.L, W = FA.widgets, B = FA.bankAPI;
+
+/* ---------------- badges ---------------- */
+var BADGES = [
+  { id: "beginner", icon: "🌱", name: { en: "Fraction Beginner", ms: "Pemula Pecahan" },
+    how: { en: "Finish lesson 1", ms: "Selesaikan pelajaran 1" },
+    test: function () { return !!(S.modules.m1 && S.modules.m1.done); } },
+  { id: "explorer", icon: "🧭", name: { en: "Fraction Explorer", ms: "Peneroka Pecahan" },
+    how: { en: "Finish 4 lessons", ms: "Selesaikan 4 pelajaran" },
+    test: function () { return FA.nav.doneCount() >= 4; } },
+  { id: "equivhero", icon: "🟰", name: { en: "Equivalent Fraction Hero", ms: "Wira Pecahan Setara" },
+    how: { en: "80% on equivalent fractions", ms: "80% dalam pecahan setara" },
+    test: function () { var a = FA.nav.topicAccuracy("equiv"); return a !== null && a >= 80 && S.topics.equiv.total >= 5; } },
+  { id: "solver", icon: "🧠", name: { en: "Fraction Problem Solver", ms: "Penyelesai Masalah Pecahan" },
+    how: { en: "Finish the word problem lesson", ms: "Selesaikan pelajaran masalah berayat" },
+    test: function () { return !!(S.modules.m11 && S.modules.m11.done); } },
+  { id: "steady", icon: "🎯", name: { en: "Sharp Shooter", ms: "Penembak Tepat" },
+    how: { en: "Score 10/10 in any quiz", ms: "Dapat 10/10 dalam mana-mana kuiz" },
+    test: function () { return !!S.badges.steady; } },
+  { id: "master", icon: "🏆", name: { en: "Fraction Master", ms: "Jaguh Pecahan" },
+    how: { en: "80% in the Master Challenge", ms: "80% dalam Cabaran Jaguh" },
+    test: function () { return !!(S.finalBest && S.finalBest.pct >= 80); } }
+];
+function checkBadges() {
+  var newOnes = [];
+  BADGES.forEach(function (b) {
+    if (!S.badges[b.id] && b.test()) { S.badges[b.id] = true; newOnes.push(b); }
+  });
+  if (newOnes.length) {
+    FA.save();
+    FA.nav.toast("🏅 " + L(newOnes[0].name));
+  }
+  return newOnes;
+}
+
+/* ---------------- question sequence ---------------- */
+/* host, questions, topicTag(null = use each question's topic), done(score) */
+function sequence(host, questions, topicTag, done) {
+  var idx = 0, score = 0, marks = [];
+  var dots = el("div", "qdots");
+  var headline = el("div", "qhead");
+  var slot = el("div", "");
+  headline.appendChild(el("strong", "hdtext", ""));
+  headline.appendChild(dots);
+  host.appendChild(headline);
+  host.appendChild(slot);
+
+  function drawDots() {
+    FA.clear(dots);
+    for (var i = 0; i < questions.length; i++) {
+      dots.appendChild(el("span", "qdot " + (marks[i] === true ? "ok" : (marks[i] === false ? "no" : (i === idx ? "now" : "")))));
+    }
+    headline.querySelector(".hdtext").textContent = T("question", { n: Math.min(idx + 1, questions.length), t: questions.length });
+  }
+  function step() {
+    if (idx >= questions.length) { done(score, marks, questions); return; }
+    drawDots();
+    var q = questions[idx];
+    W.renderQuestion(slot, q, function (ok) {
+      marks[idx] = ok;
+      if (ok) score++;
+      FA.nav.recordAnswer(topicTag || q.topic, ok);
+      idx++;
+      drawDots();
+      step();
+    });
+  }
+  step();
+}
+
+/* ---------------- full-screen quiz ---------------- */
+function run(opts) {
+  var main = FA.nav.getMain();
+  FA.clear(main);
+  window.scrollTo({ top: 0 });
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", "🏁 " + opts.title));
+  var slot = el("div", "");
+  card.appendChild(slot);
+  main.appendChild(card);
+  main.appendChild(FA.nav.backBar(opts.back || "home"));
+  sequence(slot, opts.questions, null, function (score, marks, qs) {
+    if (score === qs.length && qs.length >= 10) { S.badges.steady = true; }
+    checkBadges();
+    FA.save();
+    results({ title: opts.title, score: score, marks: marks, questions: qs,
+              back: opts.back, replay: opts.replay, isFinal: !!opts.isFinal });
+  });
+}
+
+/* ---------------- final assessment ---------------- */
+function runFinal() {
+  var qs = [];
+  var ids = B.TOPICS.map(function (t) { return t.id; });
+  ids.forEach(function (id) { qs.push(B.makeQuestion(id, 2)); });
+  var extras = FA.shuffle(ids).slice(0, 9);
+  extras.forEach(function (id) { qs.push(B.makeQuestion(id, 3)); });
+  run({
+    title: T("finalChallenge"),
+    questions: FA.shuffle(qs),
+    back: "quizhub",
+    isFinal: true,
+    replay: runFinal
+  });
+}
+
+/* ---------------- results ---------------- */
+function results(o) {
+  var main = FA.nav.getMain();
+  FA.clear(main);
+  window.scrollTo({ top: 0 });
+  var pct = Math.round((o.score / o.questions.length) * 100);
+
+  /* per-topic breakdown for this quiz */
+  var byTopic = {};
+  o.questions.forEach(function (q, i) {
+    if (!byTopic[q.topic]) byTopic[q.topic] = { c: 0, t: 0 };
+    byTopic[q.topic].t++;
+    if (o.marks[i]) byTopic[q.topic].c++;
+  });
+  var strong = [], weak = [];
+  for (var k in byTopic) {
+    var r = byTopic[k].c / byTopic[k].t;
+    if (r >= 0.8) strong.push(k); else if (r < 0.6) weak.push(k);
+  }
+
+  if (o.isFinal) {
+    var prev = S.finalBest;
+    if (!prev || pct > prev.pct) S.finalBest = { score: o.score, total: o.questions.length, pct: pct };
+    checkBadges();
+    FA.save();
+  }
+
+  var card = el("div", "card");
+  card.appendChild(el("h2", "", (pct >= 80 ? "🌟 " : "📋 ") + o.title));
+  var ring = el("div", "score-ring");
+  ring.style.setProperty("--pct", pct + "%");
+  ring.innerHTML = "<b>" + o.score + "/" + o.questions.length + "</b>";
+  card.appendChild(ring);
+  card.appendChild(el("h3", "", '<div style="text-align:center">' + T("accuracy") + ": " + pct + "%</div>"));
+  card.appendChild(el("p", "", '<div style="text-align:center;font-weight:700">' +
+    (pct >= 80 ? T("praise3") : (pct >= 60 ? T("praise2") : T("praise1"))) + "</div>"));
+
+  if (o.isFinal) {
+    card.appendChild(el("div", "callout", "<strong>" + (pct >= 80 ? "🏆 " + T("masterYes") : "💪 " + T("masterNo")) + "</strong>"));
+  }
+
+  if (strong.length) {
+    card.appendChild(el("h3", "", "✅ " + T("strongAt")));
+    var ul1 = el("ul", "tlist");
+    strong.forEach(function (t) { ul1.appendChild(el("li", "", "✓ " + B.topicName(t))); });
+    card.appendChild(ul1);
+  }
+  if (weak.length) {
+    card.appendChild(el("h3", "", "🎯 " + T("keepPractising")));
+    var ul2 = el("ul", "tlist");
+    weak.forEach(function (t) {
+      var li = el("li", "", "→ " + B.topicName(t));
+      var b = el("button", "btn");
+      b.style.padding = "6px 12px"; b.style.minHeight = "38px";
+      b.textContent = T("stepPractise");
+      b.onclick = function () { run({ title: B.topicName(t), questions: B.bank(t, 6, 2), back: o.back || "home" }); };
+      li.appendChild(b);
+      ul2.appendChild(li);
+    });
+    card.appendChild(ul2);
+  }
+
+  var row = el("div", "btn-row");
+  var again = el("button", "btn go", T("again"));
+  again.onclick = function () {
+    if (o.replay) { o.replay(); }
+    else {
+      var fresh = o.questions.map(function (q) { return B.makeQuestion(q.topic, q.level); });
+      run({ title: o.title, questions: fresh, back: o.back });
+    }
+  };
+  row.appendChild(again);
+  var hb = el("button", "btn", T("home"));
+  hb.onclick = function () { FA.nav.go("home"); };
+  row.appendChild(hb);
+  card.appendChild(row);
+  main.appendChild(card);
+  main.appendChild(FA.nav.backBar(o.back || "home"));
+}
+
+window.FA.quiz = { sequence: sequence, run: run, runFinal: runFinal, results: results, BADGES: BADGES, checkBadges: checkBadges };
+
+/* ---------------- start ---------------- */
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", FA.nav.boot);
+else FA.nav.boot();
+})();
+
+</script>
+<script>
+/* Turn on the offline helper. Works when the page is served over https
+   (or from localhost). Opening the file straight from a folder skips this,
+   and the app still runs normally. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () { /* offline mode unavailable */ });
+  });
+}
+</script>
+</body>
+</html>
